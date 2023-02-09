@@ -1,27 +1,18 @@
-use std::{convert::Infallible, iter::once, net::SocketAddr, sync::Arc};
+use std::net::{Ipv4Addr, SocketAddr};
 
-use http::{
-    header::{HeaderName, AUTHORIZATION, CONTENT_TYPE},
-    HeaderValue, Request, Response,
-};
-use hyper::body::HttpBody;
-use hyper::{server::Server, service::make_service_fn, Body, Error};
-use tokio::net::TcpListener;
-use tower::{make::Shared, service_fn, ServiceBuilder};
-use tower_http::{
-    add_extension::AddExtensionLayer, auth::RequireAuthorizationLayer,
-    compression::CompressionLayer, propagate_header::PropagateHeaderLayer,
-    sensitive_headers::SetSensitiveRequestHeadersLayer, set_header::SetResponseHeaderLayer,
-    trace::TraceLayer, validate_request::ValidateRequestHeaderLayer,
-};
+use clap::Parser;
 
-use crate::config::Environment;
-use crate::server::serve_forever;
+use crate::config::Config;
+use crate::server::app;
 
 mod config;
+mod db;
+mod dto;
 mod error;
+mod routes;
 mod server;
 mod task;
+mod util;
 
 #[tokio::main]
 async fn main() {
@@ -31,21 +22,12 @@ async fn main() {
     // Parse command line arguments
     let config = Config::parse();
 
-    // Create a `TcpListener`
-    let addr = SocketAddr::from(([0, 0, 0, 0], config.port));
-    let listener = TcpListener::bind(addr).unwrap();
-
     // Run our service
-    serve_forever(listener).await.expect("server error");
-}
-
-fn content_length_from_response<B>(response: &Response<B>) -> Option<HeaderValue>
-where
-    B: HttpBody,
-{
-    response
-        .body()
-        .size_hint()
-        .exact()
-        .map(|size| HeaderValue::from_str(&size.to_string()).unwrap())
+    let addr = SocketAddr::from((Ipv4Addr::UNSPECIFIED, config.port));
+    tracing::info!("Listening on {}", addr);
+    let app = app().await.unwrap();
+    axum::Server::bind(&addr)
+        .serve(app.into_make_service())
+        .await
+        .expect("server error");
 }

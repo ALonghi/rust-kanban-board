@@ -1,14 +1,20 @@
-use warp::{Filter, Reply};
-use warp::filters::BoxedFilter;
+use axum::routing::{delete, get, post};
+use axum::Router;
 
-use crate::{auth, environment};
-use crate::auth::models::Role;
-use crate::environment::Environment;
-use crate::users::handlers;
-use actix_web::{web, App, HttpServer, Responder, Route};
+use crate::config::AppState;
+use crate::task::handlers::{
+    get_board_tasks_handler, get_task_handler, get_tasks_handler, task_create_handler,
+    task_delete_handler,
+};
 
-pub fn routes(_env: Environment) -> BoxedFilter<(impl Reply, )> {
+pub fn get_routes() -> Router<AppState> {
+    let api_routes: Router<AppState> = Router::new()
+        .route("/tasks", get(get_tasks_handler).post(task_create_handler))
+        .route(
+            "/tasks/:task_id",
+            get(get_task_handler).delete(task_delete_handler),
+        )
+        .route("/boards/:board_id/tasks", get(get_board_tasks_handler));
 
-    web::scope("/tasks")
-        .route("/", web::Route())
+    Router::new().nest("/api", api_routes)
 }
