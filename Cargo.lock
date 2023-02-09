@@ -872,7 +872,7 @@ dependencies = [
 
 [[package]]
 name = "kanban-board-backend"
-version = "0.1.0"
+version = "0.2.1"
 dependencies = [
  "axum",
  "axum-macros",

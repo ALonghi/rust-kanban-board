@@ -1,4 +1,7 @@
+use std::borrow::Borrow;
+
 use bson::{doc, Document};
+use chrono::Utc;
 use mongodb::Collection;
 
 use crate::error::Result;
@@ -57,35 +60,47 @@ pub async fn create(task: &Task, collection: Collection<Document>) -> Result<&Ta
     Ok(task)
 }
 
-// pub async fn update(task: &Task, collection: Collection<Document>) -> Result<Task> {
-//     println!("[update_task] Updating task with id={}", &task.id);
-//     let updateTime = Utc::now();
-//     let updated = Task {
-//         updated_at: Some(updateTime),
-//         ..task.clone()
-//     };
-//
-//     let filter = doc! { "id": task.id };
-//     let updates = doc! { "$set": {
-//         "title" : &updated.title,
-//         "description" : &updated.description,
-//         "status" : &updated.status.map(|v| v.to_string()),
-//         "group_id" : &updated.group_id,
-//         "board_id" : &updated.board_id,
-//         "created_at" : &updated.created_at,
-//         "updated_at": updateTime
-//     }
-//     };
-//     collection
-//         .update_one(filter, updates, None)
-//         .await
-//         .map_err(|_e| {
-//             println!("ERROR [update_task] {:?}", _e);
-//             return AppError::MongoError(_e);
-//         })?;
-//
-//     Ok(updated)
-// }
+pub async fn update(task: &Task, collection: Collection<Document>) -> Result<Task> {
+    println!("[update_task] Updating task with id={}", &task.id);
+    let task_id = &task.id.to_string();
+    let update_time = Utc::now();
+    let updated = Task {
+        updated_at: Some(update_time),
+        ..task.clone()
+    };
+
+    let filter = doc! { "id": task_id };
+    let updates = doc! { "$set": {
+        "title" : &updated.title.clone(),
+        "description" : &updated.description.clone(),
+        "status" : &updated.status.map(|v| v.to_string()),
+        "group_id" : &updated.group_id.map(|v| v.to_string()),
+        "board_id" : &updated.board_id.to_string(),
+        "created_at" : &updated.created_at.clone(),
+        "updated_at": update_time
+    }
+    };
+    collection
+        .update_one(filter, updates, None)
+        .await
+        .map(|res| {
+            return if res.modified_count == 1 {
+                Ok(())
+            } else {
+                Err(AppError::TaskRepo(TaskRepoError::InvalidTask(format!(
+                    "modified_count = {:?} on {}",
+                    res.modified_count, res.matched_count
+                ))))
+            };
+        })
+        .map_err(|_e| {
+            println!("ERROR [update_task] {:?}", _e);
+            return AppError::MongoError(_e);
+        })?
+        .expect("uff....");
+
+    Ok(updated)
+}
 
 pub async fn delete(task_id: &String, collection: Collection<Document>) -> Result<()> {
     println!("[delete_task] Deleting task with id={}", task_id);

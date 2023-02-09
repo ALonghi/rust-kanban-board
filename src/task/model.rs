@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 use strum_macros::{Display, EnumString};
 
-#[derive(Serialize, Deserialize, Debug, Clone, Display, EnumString)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, Display, EnumString)]
 pub enum TaskStatus {
     #[strum(serialize = "to_do")]
     ToDo,

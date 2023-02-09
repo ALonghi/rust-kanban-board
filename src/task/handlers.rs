@@ -152,43 +152,43 @@ pub async fn task_create_handler(
     }
 }
 
-// // Updates existing task
-// pub async fn task_update_handler(
-//     State(state): State<AppState>,
-//     Json(task): Json<Task>,
-// ) -> impl IntoResponse {
-//     println!(
-//         "[task_update_handler] Updating task ({}) for board {}",
-//         task.id, task.board_id
-//     );
-//     match service::update(&task, state.get_tasks_collection()).await {
-//         Ok(t) => (
-//             StatusCode::OK,
-//             Json(Response {
-//                 success: true,
-//                 data: Some(t),
-//                 error_message: None,
-//             }),
-//         ),
-//         Err(e) => {
-//             let msg = format!(
-//                 "[task_create_handler] Error creating task ({}) for board {}: {:?}",
-//                 task.id,
-//                 task.board_id,
-//                 e.to_string()
-//             );
-//             println!("{}", msg);
-//             (
-//                 StatusCode::BAD_REQUEST,
-//                 Json(Response {
-//                     success: false,
-//                     data: None,
-//                     error_message: Some(msg),
-//                 }),
-//             )
-//         }
-//     }
-// }
+// Updates existing task
+pub async fn task_update_handler(
+    State(state): State<AppState>,
+    Json(task): Json<Task>,
+) -> impl IntoResponse {
+    println!(
+        "[task_update_handler] Updating task ({}) for board {}",
+        task.id, task.board_id
+    );
+    match service::update(&task, state.get_tasks_collection()).await {
+        Ok(t) => (
+            StatusCode::OK,
+            Json(Response {
+                success: true,
+                data: Some(t),
+                error_message: None,
+            }),
+        ),
+        Err(e) => {
+            let msg = format!(
+                "[task_create_handler] Error creating task ({}) for board {}: {:?}",
+                task.id,
+                task.board_id,
+                e.to_string()
+            );
+            println!("{}", msg);
+            (
+                StatusCode::BAD_REQUEST,
+                Json(Response {
+                    success: false,
+                    data: None,
+                    error_message: Some(msg),
+                }),
+            )
+        }
+    }
+}
 
 // Deletes existing task
 #[axum_macros::debug_handler]
