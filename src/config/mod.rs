@@ -6,7 +6,7 @@ use mongodb::{Client, Collection, Database};
 #[derive(Debug, Parser)]
 pub struct Config {
     /// The port to listen on
-    #[clap(short = 'p', long, default_value = "3000")]
+    #[clap(short = 'p', long, default_value = "8080")]
     pub port: u16,
 }
 
@@ -24,5 +24,9 @@ impl AppState {
 
     pub fn get_tasks_collection(&self) -> Collection<Document> {
         self.get_database().collection("tasks")
+    }
+
+    pub fn get_boards_collection(&self) -> Collection<Document> {
+        self.get_database().collection("boards")
     }
 }

@@ -2,12 +2,16 @@ use std::{sync::Arc, time::Duration};
 
 use axum::{
     body::Bytes,
-    http::{header, HeaderValue},
+    http::{header, HeaderValue, Method},
     Router,
 };
 use tower::ServiceBuilder;
-use tower_http::timeout::TimeoutLayer;
+use tower_http::cors::AllowOrigin;
 use tower_http::trace::{DefaultMakeSpan, DefaultOnResponse, TraceLayer};
+use tower_http::{
+    cors::{any, CorsLayer},
+    timeout::TimeoutLayer,
+};
 use tower_http::{LatencyUnit, ServiceBuilderExt};
 
 use crate::config::AppState;
@@ -22,6 +26,17 @@ pub async fn app() -> Result<Router> {
     };
 
     let sensitive_headers: Arc<[_]> = vec![header::AUTHORIZATION, header::COOKIE].into();
+    let cors = CorsLayer::new()
+        // allow `GET` and `POST` when accessing the resource
+        .allow_methods(vec![
+            Method::GET,
+            Method::POST,
+            Method::PUT,
+            Method::DELETE,
+            Method::OPTIONS,
+        ])
+        // allow requests from any origin
+        .allow_origin(AllowOrigin::any());
 
     // Build our middleware stack
     let middleware = ServiceBuilder::new()
@@ -50,5 +65,5 @@ pub async fn app() -> Result<Router> {
         );
 
     // Build route service
-    Ok(get_routes().layer(middleware).with_state(state))
+    Ok(get_routes().layer(cors).layer(middleware).with_state(state))
 }

@@ -3,6 +3,7 @@ use std::borrow::Borrow;
 use bson::{doc, Document};
 use chrono::Utc;
 use mongodb::Collection;
+use tracing::debug;
 
 use crate::error::Result;
 use crate::error::{AppError, TaskRepoError};
@@ -11,7 +12,7 @@ use crate::task::utils::{doc_to_task, parse_tasks, task_to_doc};
 
 pub async fn get_all_tasks(collection: Collection<Document>) -> Result<Vec<Task>> {
     let mut cursor = collection.find(None, None).await.map_err(|_e| {
-        println!("ERROR [get_tasks] {:?}", _e);
+        debug!("ERROR [get_tasks] {:?}", _e);
         return TaskRepoError::NotFound;
     })?;
     return parse_tasks(cursor).await;
@@ -20,7 +21,7 @@ pub async fn get_all_tasks(collection: Collection<Document>) -> Result<Vec<Task>
 pub async fn get_tasks(board_id: &String, collection: Collection<Document>) -> Result<Vec<Task>> {
     let filter = doc! { "board_id": board_id };
     let mut cursor = collection.find(filter, None).await.map_err(|_e| {
-        println!("ERROR [get_tasks] {:?}", _e);
+        debug!("ERROR [get_tasks] {:?}", _e);
         return TaskRepoError::NotFound;
     })?;
     return parse_tasks(cursor).await;
@@ -32,7 +33,7 @@ pub async fn get_task(task_id: &String, collection: Collection<Document>) -> Res
         .find_one(filter, None)
         .await
         .map_err(|e| {
-            println!(
+            debug!(
                 "Error while getting a task with id {}: {}",
                 task_id,
                 e.to_string()
@@ -44,24 +45,24 @@ pub async fn get_task(task_id: &String, collection: Collection<Document>) -> Res
     match task_opt {
         Some(task) => Ok(task),
         None => {
-            println!("task_opt is None!");
+            debug!("task_opt is None!");
             Err(AppError::TaskRepo(TaskRepoError::NotFound))
         }
     }
 }
 
 pub async fn create(task: &Task, collection: Collection<Document>) -> Result<&Task> {
-    println!("[create_task] Creating task with id={}", &task.id);
+    debug!("[create_task] Creating task with id={}", &task.id);
     let doc = task_to_doc(&task);
     collection.insert_one(doc, None).await.map_err(|_e| {
-        println!("ERROR [create_task] {:?}", _e);
+        debug!("ERROR [create_task] {:?}", _e);
         return TaskRepoError::InvalidTask(_e.to_string());
     })?;
     Ok(task)
 }
 
 pub async fn update(task: &Task, collection: Collection<Document>) -> Result<Task> {
-    println!("[update_task] Updating task with id={}", &task.id);
+    debug!("[update_task] Updating task with id={}", &task.id);
     let task_id = &task.id.to_string();
     let update_time = Utc::now();
     let updated = Task {
@@ -70,16 +71,7 @@ pub async fn update(task: &Task, collection: Collection<Document>) -> Result<Tas
     };
 
     let filter = doc! { "id": task_id };
-    let updates = doc! { "$set": {
-        "title" : &updated.title.clone(),
-        "description" : &updated.description.clone(),
-        "status" : &updated.status.map(|v| v.to_string()),
-        "group_id" : &updated.group_id.map(|v| v.to_string()),
-        "board_id" : &updated.board_id.to_string(),
-        "created_at" : &updated.created_at.clone(),
-        "updated_at": update_time
-    }
-    };
+    let updates = doc! { "$set": task_to_doc(&updated) };
     collection
         .update_one(filter, updates, None)
         .await
@@ -94,16 +86,16 @@ pub async fn update(task: &Task, collection: Collection<Document>) -> Result<Tas
             };
         })
         .map_err(|_e| {
-            println!("ERROR [update_task] {:?}", _e);
+            debug!("ERROR [update_task] {:?}", _e);
             return AppError::MongoError(_e);
         })?
-        .expect("uff....");
+        .expect(format!("Coudn't update task {}", task_id).as_str());
 
     Ok(updated)
 }
 
 pub async fn delete(task_id: &String, collection: Collection<Document>) -> Result<()> {
-    println!("[delete_task] Deleting task with id={}", task_id);
+    debug!("[delete_task] Deleting task with id={}", task_id);
     let filter = doc! { "id": task_id };
     collection.delete_one(filter, None).await?;
     Ok(())

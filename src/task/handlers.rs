@@ -1,34 +1,42 @@
 // use axum::body::Body;
 
+use std::collections::LinkedList;
+
 use axum::extract::{Path, State};
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum::Json;
+use tower::ServiceExt;
+use tracing::{debug, error};
 
 use crate::config::AppState;
 use crate::dto::{CreateTaskRequest, Response};
-use crate::task::model::Task;
+use crate::task::model::{SortedTask, Task};
 use crate::task::service;
+use crate::task::utils::build_task_hierarchy;
 
 // Returns all tasks
 #[axum_macros::debug_handler]
 pub async fn get_tasks_handler(State(state): State<AppState>) -> impl IntoResponse {
-    println!("Getting all tasks");
+    debug!("Getting all tasks");
     match service::get_all_tasks(state.get_tasks_collection()).await {
-        Ok(tasks) => (
-            StatusCode::OK,
-            Json(Response {
-                success: true,
-                data: Some(tasks),
-                error_message: None,
-            }),
-        ),
+        Ok(tasks) => {
+            let task_hierarchy: LinkedList<SortedTask> = map_task_db_to_linked(tasks);
+            (
+                StatusCode::OK,
+                Json(Response {
+                    success: true,
+                    data: Some(task_hierarchy),
+                    error_message: None,
+                }),
+            )
+        }
         Err(e) => {
             let msg = format!(
                 "[get_tasks_handler] Error getting all tasks: {:?}",
                 e.to_string()
             );
-            println!("{}", msg);
+            error!("{}", msg);
             (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 Json(Response {
@@ -48,23 +56,26 @@ pub async fn get_board_tasks_handler(
     State(state): State<AppState>,
 ) -> impl IntoResponse {
     let board_id = path.0;
-    println!("Getting all tasks for board {}", board_id);
+    debug!("Getting all tasks for board {}", board_id);
     match service::get_tasks(&board_id, state.get_tasks_collection()).await {
-        Ok(tasks) => (
-            StatusCode::OK,
-            Json(Response {
-                success: true,
-                data: Some(tasks),
-                error_message: None,
-            }),
-        ),
+        Ok(tasks) => {
+            let task_hierarchy: LinkedList<SortedTask> = map_task_db_to_linked(tasks);
+            (
+                StatusCode::OK,
+                Json(Response {
+                    success: true,
+                    data: Some(task_hierarchy),
+                    error_message: None,
+                }),
+            )
+        }
         Err(e) => {
             let msg = format!(
                 "[get_tasks_handler] Error getting tasks for board {}: {:?}",
                 board_id,
                 e.to_string()
             );
-            println!("{}", msg);
+            error!("{}", msg);
             (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 Json(Response {
@@ -83,7 +94,7 @@ pub async fn get_task_handler(
     State(state): State<AppState>,
 ) -> impl IntoResponse {
     let task_id = path.0;
-    println!("Getting task with id {}", task_id);
+    debug!("Getting task with id {}", task_id);
     match service::get_task(&task_id, state.get_tasks_collection()).await {
         Ok(task) => (
             StatusCode::OK,
@@ -99,7 +110,7 @@ pub async fn get_task_handler(
                 task_id,
                 e.to_string()
             );
-            println!("{}", msg);
+            error!("{}", msg);
             (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 Json(Response {
@@ -118,7 +129,7 @@ pub async fn task_create_handler(
     State(state): State<AppState>,
     Json(req): Json<CreateTaskRequest>,
 ) -> impl IntoResponse {
-    println!(
+    debug!(
         "[task_create_handler] Creating task ({}) for board {}",
         req.title, req.board_id
     );
@@ -139,7 +150,7 @@ pub async fn task_create_handler(
                 task.board_id,
                 e.to_string()
             );
-            println!("{}", msg);
+            error!("{}", msg);
             (
                 StatusCode::BAD_REQUEST,
                 Json(Response {
@@ -157,7 +168,7 @@ pub async fn task_update_handler(
     State(state): State<AppState>,
     Json(task): Json<Task>,
 ) -> impl IntoResponse {
-    println!(
+    debug!(
         "[task_update_handler] Updating task ({}) for board {}",
         task.id, task.board_id
     );
@@ -172,12 +183,12 @@ pub async fn task_update_handler(
         ),
         Err(e) => {
             let msg = format!(
-                "[task_create_handler] Error creating task ({}) for board {}: {:?}",
+                "[task_create_handler] Error updating task ({}) for board {}: {:?}",
                 task.id,
                 task.board_id,
                 e.to_string()
             );
-            println!("{}", msg);
+            error!("{}", msg);
             (
                 StatusCode::BAD_REQUEST,
                 Json(Response {
@@ -197,11 +208,11 @@ pub async fn task_delete_handler(
     State(state): State<AppState>,
 ) -> impl IntoResponse {
     let task_id = path.0;
-    println!("[task_delete_handler] Deleting task {}", task_id);
+    debug!("[task_delete_handler] Deleting task {}", task_id);
     match service::delete(&task_id, state.get_tasks_collection()).await {
         Ok(_) => {
             let msg = format!("Deleted task with id {}", task_id);
-            println!("[task_delete_handler] {}", msg);
+            debug!("[task_delete_handler] {}", msg);
             (
                 StatusCode::OK,
                 Json(Response {
@@ -213,7 +224,7 @@ pub async fn task_delete_handler(
         }
         Err(e) => {
             let msg = format!("Error in deleting task {}: {}", task_id, e.to_string());
-            println!("{}", msg);
+            error!("{}", msg);
             (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 Json(Response {
@@ -224,4 +235,12 @@ pub async fn task_delete_handler(
             )
         }
     }
+}
+
+fn map_task_db_to_linked(elems: Vec<Task>) -> LinkedList<SortedTask> {
+    build_task_hierarchy(elems)
+        .into_iter()
+        .enumerate()
+        .map(|(i, t)| t.to_sorted(i))
+        .collect::<LinkedList<SortedTask>>()
 }
