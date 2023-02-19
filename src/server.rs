@@ -8,10 +8,7 @@ use axum::{
 use tower::ServiceBuilder;
 use tower_http::cors::AllowOrigin;
 use tower_http::trace::{DefaultMakeSpan, DefaultOnResponse, TraceLayer};
-use tower_http::{
-    cors::{any, CorsLayer},
-    timeout::TimeoutLayer,
-};
+use tower_http::{cors::CorsLayer, timeout::TimeoutLayer};
 use tower_http::{LatencyUnit, ServiceBuilderExt};
 
 use crate::config::AppState;

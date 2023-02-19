@@ -1,12 +1,10 @@
-// use axum::body::Body;
-
 use std::collections::LinkedList;
 
 use axum::extract::{Path, State};
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum::Json;
-use tower::ServiceExt;
+use chrono::Utc;
 use tracing::{debug, error};
 
 use crate::config::AppState;
@@ -166,26 +164,41 @@ pub async fn task_create_handler(
 // Updates existing task
 pub async fn task_update_handler(
     State(state): State<AppState>,
-    Json(task): Json<Task>,
+    Json(tasks): Json<Vec<Task>>,
 ) -> impl IntoResponse {
+    let tasks_ids = &tasks
+        .clone()
+        .iter()
+        .map(|t| t.id.to_string())
+        .collect::<Vec<String>>();
     debug!(
-        "[task_update_handler] Updating task ({}) for board {}",
-        task.id, task.board_id
+        "[task_update_handler] Updating {} tasks {:?}",
+        tasks_ids.len(),
+        tasks_ids
     );
-    match service::update(&task, state.get_tasks_collection()).await {
-        Ok(t) => (
+    let update_time = Utc::now();
+
+    let updated_tasks = &tasks
+        .into_iter()
+        .map(|t| Task {
+            updated_at: Some(update_time),
+            ..t
+        })
+        .collect();
+
+    match service::update_many(&updated_tasks, state).await {
+        Ok(_) => (
             StatusCode::OK,
             Json(Response {
                 success: true,
-                data: Some(t),
+                data: Some(updated_tasks.clone()),
                 error_message: None,
             }),
         ),
         Err(e) => {
             let msg = format!(
-                "[task_create_handler] Error updating task ({}) for board {}: {:?}",
-                task.id,
-                task.board_id,
+                "[task_create_handler] Error updating tasks ({:?}): {:?}",
+                tasks_ids,
                 e.to_string()
             );
             error!("{}", msg);
@@ -239,7 +252,7 @@ pub async fn task_delete_handler(
 
 fn map_task_db_to_linked(elems: Vec<Task>) -> LinkedList<SortedTask> {
     build_task_hierarchy(elems)
-        .into_iter()
+        .iter()
         .enumerate()
         .map(|(i, t)| t.to_sorted(i))
         .collect::<LinkedList<SortedTask>>()

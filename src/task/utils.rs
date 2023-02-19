@@ -6,6 +6,8 @@ use chrono::Utc;
 use mongodb::bson::doc;
 // don't forget this!
 use tokio_stream::StreamExt;
+use tracing::error;
+use tracing::log::debug;
 use uuid::Uuid;
 
 use crate::error::Result;
@@ -15,7 +17,6 @@ use crate::util::get_optional_uuid;
 
 pub fn build_task_hierarchy(vec: Vec<Task>) -> LinkedList<Task> {
     let mut results: LinkedList<Task> = LinkedList::<Task>::new();
-
     let parent_opt = vec.iter().find(|e| e.above_task_id.is_none());
 
     match parent_opt {

@@ -1,6 +1,7 @@
 use thiserror::Error;
+use tokio_stream::StreamExt;
 
-pub type Result<T> = std::result::Result<T, AppError>;
+pub type Result<T> = core::result::Result<T, AppError>;
 
 /// Our app's top level error type.
 #[derive(Error, Debug)]
@@ -27,6 +28,9 @@ pub enum TaskRepoError {
     #[allow(dead_code)]
     #[error("decoding task resulted in an error: {0}")]
     DecodeError(String),
+    #[allow(dead_code)]
+    #[error("transaction for task resulted in an error: {0}")]
+    TransactionError(String),
 }
 
 /// Errors that can happen when using the task repo.
@@ -51,10 +55,26 @@ impl From<TaskRepoError> for AppError {
     }
 }
 
-/// This makes it possible to use `?` to automatically convert a `TaskRepoError`
+/// This makes it possible to use `?` to automatically convert a `BoardRepoError`
 /// into an `AppError`.
 impl From<BoardRepoError> for AppError {
     fn from(inner: BoardRepoError) -> Self {
         AppError::BoardRepo(inner)
+    }
+}
+
+/// This makes it possible to use `?` to automatically convert a `TaskRepoError`
+/// into an `AppError`.
+impl From<AppError> for std::result::Result<(), AppError> {
+    fn from(inner: AppError) -> Self {
+        std::result::Result::Err(inner)
+    }
+}
+
+/// This makes it possible to use `?` to automatically convert a `TaskRepoError`
+/// into an `AppError`.
+impl From<TaskRepoError> for std::result::Result<(), AppError> {
+    fn from(inner: TaskRepoError) -> Self {
+        std::result::Result::Err(inner.into())
     }
 }
