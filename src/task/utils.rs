@@ -1,4 +1,5 @@
-use std::collections::LinkedList;
+use std::borrow::BorrowMut;
+use std::collections::{HashMap, LinkedList};
 use std::str::FromStr;
 
 use axum::extract::FromRef;
@@ -15,28 +16,40 @@ use crate::error::{AppError, TaskRepoError};
 use crate::task::model::Task;
 use crate::util::get_optional_uuid;
 
-pub fn build_task_hierarchy(vec: Vec<Task>) -> LinkedList<Task> {
-    let mut results: LinkedList<Task> = LinkedList::<Task>::new();
-    let parent_opt = vec.iter().find(|e| e.above_task_id.is_none());
-
-    match parent_opt {
-        Some(parent_task) => {
-            results.push_back(parent_task.clone());
-            let results_ref = &mut results;
-            add_elem_to_hierarchy(results_ref, vec);
-            results
-        }
-        None => results,
+pub fn build_hierarchy_set(tasks: Vec<Task>) -> LinkedList<Task> {
+    // Create a hash map to map task IDs to their corresponding task objects.
+    let mut task_map = HashMap::new();
+    for task in tasks {
+        task_map.insert(task.id.to_string().clone(), task);
     }
+
+    // Create a linked list to store the sorted hierarchy set.
+    let mut hierarchy_set = LinkedList::new();
+
+    // Traverse the task hierarchy starting from each root task, and add the tasks to the hierarchy set in sorted order.
+    for (task_id, _) in &task_map {
+        let task = task_map.get(task_id).unwrap();
+        if task.above_task_id.is_none() {
+            add_task_and_children_to_set(&task_map, &mut hierarchy_set, &task.id.to_string());
+        }
+    }
+
+    hierarchy_set
 }
 
-fn add_elem_to_hierarchy(results: &mut LinkedList<Task>, elems: Vec<Task>) -> () {
-    for item in elems.iter() {
-        let child_opt = elems
-            .iter()
-            .find(|e| Some(item.id.to_string()) == e.above_task_id.map(|v| v.to_string()));
-        if let Some(child_elem) = child_opt {
-            results.push_back(child_elem.clone());
+fn add_task_and_children_to_set(
+    task_map: &HashMap<String, Task>,
+    hierarchy_set: &mut LinkedList<Task>,
+    task_id: &str,
+) {
+    let task = task_map.get(task_id).unwrap();
+    hierarchy_set.push_back(task.clone());
+
+    // Traverse the child tasks recursively and add them to the hierarchy set in sorted order.
+    for (child_task_id, _) in task_map {
+        let child_task = task_map.get(child_task_id).unwrap();
+        if child_task.above_task_id == Some(task.id.clone()) {
+            add_task_and_children_to_set(task_map, hierarchy_set, child_task_id);
         }
     }
 }

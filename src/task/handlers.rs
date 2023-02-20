@@ -11,7 +11,7 @@ use crate::config::AppState;
 use crate::dto::{CreateTaskRequest, Response};
 use crate::task::model::{SortedTask, Task};
 use crate::task::service;
-use crate::task::utils::build_task_hierarchy;
+use crate::task::utils::build_hierarchy_set;
 
 // Returns all tasks
 #[axum_macros::debug_handler]
@@ -251,7 +251,7 @@ pub async fn task_delete_handler(
 }
 
 fn map_task_db_to_linked(elems: Vec<Task>) -> LinkedList<SortedTask> {
-    build_task_hierarchy(elems)
+    build_hierarchy_set(elems)
         .iter()
         .enumerate()
         .map(|(i, t)| t.to_sorted(i))
