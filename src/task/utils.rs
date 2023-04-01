@@ -19,8 +19,8 @@ use crate::util::get_optional_uuid;
 pub fn build_hierarchy_set(tasks: Vec<Task>) -> LinkedList<Task> {
     // Create a hash map to map task IDs to their corresponding task objects.
     let mut task_map = HashMap::new();
-    for task in tasks {
-        task_map.insert(task.id.to_string().clone(), task);
+    for task in tasks.clone() {
+        task_map.insert(task.id.to_string().clone(), task.clone());
     }
 
     // Create a linked list to store the sorted hierarchy set.
@@ -33,7 +33,15 @@ pub fn build_hierarchy_set(tasks: Vec<Task>) -> LinkedList<Task> {
             add_task_and_children_to_set(&task_map, &mut hierarchy_set, &task.id.to_string());
         }
     }
-
+    // adding left over ones
+    let remaining = tasks
+        .clone()
+        .into_iter()
+        .filter(|task| !hierarchy_set.contains(&task.clone()))
+        .collect::<Vec<Task>>();
+    remaining
+        .into_iter()
+        .for_each(|t| hierarchy_set.push_back(t.clone()));
     hierarchy_set
 }
 

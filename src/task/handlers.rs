@@ -7,6 +7,8 @@ use axum::Json;
 use chrono::Utc;
 use tracing::{debug, error};
 
+use itertools::Itertools;
+
 use crate::config::AppState;
 use crate::dto::{CreateTaskRequest, Response};
 use crate::task::model::{SortedTask, Task};
@@ -251,9 +253,16 @@ pub async fn task_delete_handler(
 }
 
 fn map_task_db_to_linked(elems: Vec<Task>) -> LinkedList<SortedTask> {
-    build_hierarchy_set(elems)
+    elems
         .iter()
-        .enumerate()
-        .map(|(i, t)| t.to_sorted(i))
+        .group_by(|t| t.clone().column_id)
+        .into_iter()
+        .flat_map(|(column_id, tasks)| {
+            build_hierarchy_set(tasks.cloned().collect())
+                .iter()
+                .enumerate()
+                .map(|(i, t)| t.clone().to_sorted(i))
+                .collect::<LinkedList<SortedTask>>()
+        })
         .collect::<LinkedList<SortedTask>>()
 }

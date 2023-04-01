@@ -5,7 +5,7 @@ use serde_with::skip_serializing_none;
 use crate::dto::CreateTaskRequest;
 
 #[skip_serializing_none]
-#[derive(Clone, Serialize, Deserialize, Debug)]
+#[derive(Clone, Serialize, Deserialize, Debug, PartialEq)]
 pub struct Task {
     pub id: uuid::Uuid,
     pub title: String,
