@@ -39,10 +39,32 @@ pub fn build_hierarchy_set(tasks: Vec<Task>) -> LinkedList<Task> {
         .into_iter()
         .filter(|task| !hierarchy_set.contains(&task.clone()))
         .collect::<Vec<Task>>();
-    remaining
-        .into_iter()
-        .for_each(|t| hierarchy_set.push_back(t.clone()));
+
+    remaining.into_iter().for_each(|t| {
+        hierarchy_set
+            .push_back(t.with_above_task(hierarchy_set.back().and_then(|t| t.above_task_id)))
+    });
     hierarchy_set
+}
+
+pub fn grouped_by_column(tasks: &Vec<Task>) -> Vec<(Option<Uuid>, Vec<Task>)> {
+    let mut elems: HashMap<Option<Uuid>, Vec<Task>> = HashMap::new();
+    for task in tasks.iter() {
+        let mut mapped_for_key = elems
+            .get(&task.column_id)
+            .map(|v| v.clone())
+            .unwrap_or(Vec::new());
+        if mapped_for_key.clone().len() > 0 {
+            mapped_for_key.push(task.clone());
+            elems.insert(task.column_id, mapped_for_key.clone());
+        } else {
+            elems.insert(task.column_id, vec![task.clone()]);
+        }
+    }
+    elems
+        .into_iter()
+        .map(|(key, values)| (key, values))
+        .collect::<Vec<(Option<Uuid>, Vec<Task>)>>()
 }
 
 fn add_task_and_children_to_set(

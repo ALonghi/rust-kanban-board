@@ -30,6 +30,12 @@ impl Task {
             updated_at: None,
         }
     }
+
+    pub fn with_above_task(&self, id: Option<uuid::Uuid>) -> Self {
+        let mut cloned: Task = self.clone();
+        cloned.above_task_id = id;
+        cloned
+    }
 }
 
 #[skip_serializing_none]

@@ -5,15 +5,15 @@ use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum::Json;
 use chrono::Utc;
-use tracing::{debug, error};
-
 use itertools::Itertools;
+use tracing::log::info;
+use tracing::{debug, error};
 
 use crate::config::AppState;
 use crate::dto::{CreateTaskRequest, Response};
 use crate::task::model::{SortedTask, Task};
 use crate::task::service;
-use crate::task::utils::build_hierarchy_set;
+use crate::task::utils::{build_hierarchy_set, grouped_by_column};
 
 // Returns all tasks
 #[axum_macros::debug_handler]
@@ -253,16 +253,13 @@ pub async fn task_delete_handler(
 }
 
 fn map_task_db_to_linked(elems: Vec<Task>) -> LinkedList<SortedTask> {
-    elems
-        .iter()
-        .group_by(|t| t.clone().column_id)
+    grouped_by_column(&elems)
         .into_iter()
         .flat_map(|(column_id, tasks)| {
-            build_hierarchy_set(tasks.cloned().collect())
-                .iter()
+            build_hierarchy_set(tasks.clone())
+                .into_iter()
                 .enumerate()
                 .map(|(i, t)| t.clone().to_sorted(i))
-                .collect::<LinkedList<SortedTask>>()
         })
         .collect::<LinkedList<SortedTask>>()
 }
