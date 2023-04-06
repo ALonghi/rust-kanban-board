@@ -3,8 +3,6 @@ use std::net::{Ipv4Addr, SocketAddr};
 use clap::Parser;
 use dotenv::dotenv;
 use tracing::{info, Level};
-use tracing_subscriber::layer::SubscriberExt;
-use tracing_subscriber::util::SubscriberInitExt;
 use tracing_subscriber::FmtSubscriber;
 
 use crate::config::Config;

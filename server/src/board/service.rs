@@ -5,7 +5,7 @@ use tracing::{debug, error};
 
 use crate::board::mapper::{board_to_doc, parse_boards};
 use crate::board::model::Board;
-use crate::error::AppError::{self, BoardRepo};
+use crate::error::AppError;
 use crate::error::{BoardRepoError, Result, TaskRepoError};
 
 use super::mapper::doc_to_board;
