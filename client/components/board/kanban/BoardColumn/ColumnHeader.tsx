@@ -13,7 +13,7 @@ import WarningModal from "@components/board/kanban/WarningModal";
 type ColumnHeaderProps = {
   board: IBoard;
   column?: IBoardColumn;
-  allGroupedTasks?: GroupedTasks[];
+  tasks?: ITask[];
   overriddenName?: string;
   updateBoard: React.Dispatch<React.SetStateAction<IBoard>>;
   updateTasks: React.Dispatch<React.SetStateAction<ITask[]>>;
@@ -27,7 +27,7 @@ type ColumnHeaderProps = {
 export default function ColumnHeader({
   board,
   column,
-  allGroupedTasks,
+  tasks,
   overriddenName,
   updateBoard,
   updateTasks,
@@ -45,7 +45,7 @@ export default function ColumnHeader({
     saveColumn,
     deleteColumn,
   } = useColumnHeader(
-    allGroupedTasks,
+    tasks,
     board,
     updateBoard,
     updateTasks,

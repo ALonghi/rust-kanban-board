@@ -1,5 +1,9 @@
 import { IBoard } from "@model/board";
-import { removePositionField, UNASSIGNED_COLUMN_ID } from "@utils/helpers";
+import {
+  isOfSameColumn,
+  removePositionField,
+  UNASSIGNED_COLUMN_ID,
+} from "@utils/helpers";
 import { ITask } from "@model/task";
 import { createToast, IToast } from "@model/toast";
 import { addNotification } from "@stores/notificationStore";
@@ -44,12 +48,12 @@ export const useDraggable = (
     )
       return;
 
-    const tasksOfColumnDraggedFrom =
-      tasks.filter((g) => g.column_id === dragged.droppableId) || [];
+    const draggedColumnFiltered =
+      tasks.filter((t) => isOfSameColumn(t, dragged.droppableId)) || [];
     const itemMoved =
-      tasksOfColumnDraggedFrom?.length > 0
+      draggedColumnFiltered?.length > 0
         ? ({
-            ...tasksOfColumnDraggedFrom[dragged.index],
+            ...draggedColumnFiltered[dragged.index],
             column_id:
               over.droppableId === UNASSIGNED_COLUMN_ID
                 ? null
@@ -57,12 +61,8 @@ export const useDraggable = (
           } as ITask)
         : null;
 
-    const overColumnFiltered = tasks.filter(
-      (t) => t.column_id === over.droppableId
-    );
-    const draggedColumnFiltered = tasks.filter(
-      (t) => t.column_id === dragged.droppableId
-    );
+    const overColumnFiltered =
+      tasks.filter((t) => isOfSameColumn(t, over.droppableId)) || [];
     // if item was dragged to the last position
     if (over.index > overColumnFiltered.length - 1) {
       const itemMovedUpdated: ITask = {

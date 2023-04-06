@@ -143,37 +143,26 @@ pub async fn board_create_column_handler(
         req: &CreateBoardColumnRequest,
         state: AppState,
     ) -> Result<CreateBoardColumnResponse, AppError> {
-        match board_service::get_board(&board_id, state.get_boards_collection()).await {
-            Ok(board) => match create_and_add_column_to(board, req.clone()).await {
-                Ok((updated_board, new_column)) => {
-                    match board_service::update(&updated_board, state.get_boards_collection()).await
-                    {
-                        Ok(_) => {
-                            let mapped = req
-                                .items
-                                .iter()
-                                .map(|task| Task {
-                                    column_id: Some(new_column.id.clone()),
-                                    ..task.clone()
-                                })
-                                .collect::<Vec<Task>>();
-                            if let Ok(_) = task_service::update_many(&mapped.clone(), state).await {
-                                Ok(CreateBoardColumnResponse {
-                                    column: new_column,
-                                    items: map_task_db_to_linked(mapped.clone()),
-                                })
-                            } else {
-                                Err(AppError::TaskRepo(TaskRepoError::TransactionError(
-                                    String::from("Coudnt complete update of tasks"),
-                                )))
-                            }
-                        }
-                        Err(e) => Err(e),
-                    }
-                }
-                Err(e) => Err(e),
-            },
-            Err(e) => Err(e),
+        let board = board_service::get_board(&board_id, state.get_boards_collection()).await?;
+        let (updated_board, new_column) = create_and_add_column_to(board, req.clone()).await?;
+        board_service::update(&updated_board, state.get_boards_collection()).await?;
+        let mapped = req
+            .items
+            .iter()
+            .map(|task| Task {
+                column_id: Some(new_column.id.clone()),
+                ..task.clone()
+            })
+            .collect::<Vec<Task>>();
+        if let Ok(_) = task_service::update_many(&mapped.clone(), state).await {
+            Ok(CreateBoardColumnResponse {
+                column: new_column,
+                items: map_task_db_to_linked(mapped.clone()),
+            })
+        } else {
+            Err(AppError::TaskRepo(TaskRepoError::TransactionError(
+                String::from("Coudnt complete update of tasks"),
+            )))
         }
     }
 
@@ -221,31 +210,30 @@ pub async fn board_delete_column_handler(
         column_id: &uuid::Uuid,
         state: AppState,
     ) -> Result<Board, AppError> {
-        match board_service::get_board(&board_id, state.get_boards_collection()).await {
-            Ok(board) => {
-                let filtered_board = filter_column_from(board, column_id.clone());
-                match board_service::update(&filtered_board, state.get_boards_collection()).await {
-                    Ok(updated_board) => {
-                        debug!("Correctly updated board {:?}", filtered_board);
-                        if let Ok(_) = task_service::delete_tasks_of_column(
-                            &column_id.to_string(),
-                            state.get_tasks_collection(),
-                        )
-                        .await
-                        {
-                            debug!("Correctly deleted tasks after deletion of column board with id {:?}", column_id);
-                            Ok(updated_board)
-                        } else {
-                            debug!("Error int deleting tasks after deletion of column board with id {:?}", column_id);
-                            Err(AppError::TaskRepo(TaskRepoError::TransactionError(
-                                String::from("Couldnt complete delete of column tasks"),
-                            )))
-                        }
-                    }
-                    Err(e) => Err(e),
-                }
-            }
-            Err(e) => Err(e),
+        let board = board_service::get_board(&board_id, state.get_boards_collection()).await?;
+        let filtered_board = filter_column_from(board, column_id.clone());
+        let updated_board =
+            board_service::update(&filtered_board, state.get_boards_collection()).await?;
+        debug!("Correctly updated board {:?}", filtered_board);
+        if let Ok(_) = task_service::delete_tasks_of_column(
+            &column_id.to_string(),
+            state.get_tasks_collection(),
+        )
+        .await
+        {
+            debug!(
+                "Correctly deleted tasks after deletion of column board with id {:?}",
+                column_id
+            );
+            Ok(updated_board)
+        } else {
+            debug!(
+                "Error int deleting tasks after deletion of column board with id {:?}",
+                column_id
+            );
+            Err(AppError::TaskRepo(TaskRepoError::TransactionError(
+                String::from("Couldnt complete delete of column tasks"),
+            )))
         }
     }
 

@@ -1,7 +1,10 @@
-import GroupedTasks from "@model/groupedTasks";
 import { ITask } from "@model/task";
 import { CreateBoardColumnRequest } from "@model/dto";
-import { UNASSIGNED_COLUMN_ID, UNASSIGNED_COLUMN_NAME } from "@utils/helpers";
+import {
+  isOfSameColumn,
+  UNASSIGNED_COLUMN_ID,
+  UNASSIGNED_COLUMN_NAME,
+} from "@utils/helpers";
 import { IBoard, IBoardColumn } from "@model/board";
 import { useState } from "react";
 import BoardService from "@service/boardService";
@@ -11,7 +14,7 @@ import { useRouter } from "next/router";
 import Logger from "@utils/logging";
 
 export const useColumnHeader = (
-  allGroupedTasks: GroupedTasks[],
+  tasks: ITask[],
   board: IBoard,
   updateBoard: React.Dispatch<React.SetStateAction<IBoard>>,
   updateTasks: React.Dispatch<React.SetStateAction<ITask[]>>,
@@ -22,7 +25,6 @@ export const useColumnHeader = (
   ) => void,
   column?: IBoardColumn
 ) => {
-  const router = useRouter();
   const [currentColumn, setCurrentColumn] = useState<IBoardColumn | null>(
     column || null
   );
@@ -31,14 +33,9 @@ export const useColumnHeader = (
   );
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const saveColumn = async () => {
-    if (!column?.id || column?.id === UNASSIGNED_COLUMN_ID) {
-      const colItems = allGroupedTasks
-        .filter((g) =>
-          column?.id === UNASSIGNED_COLUMN_ID
-            ? g.columnId === column?.id
-            : false
-        )
-        .flatMap((g) => g.items);
+    if (!currentColumn?.id || currentColumn?.id === UNASSIGNED_COLUMN_ID) {
+      const colItems: ITask[] =
+        tasks.filter((t) => isOfSameColumn(t, currentColumn?.id)) || [];
       const req: CreateBoardColumnRequest = {
         title: newColumnName,
         items: colItems,
@@ -53,9 +50,9 @@ export const useColumnHeader = (
           updateTasks((prev) => {
             const newItems = [
               ...prev.map((t) =>
-                t.column_id === UNASSIGNED_COLUMN_ID
+                t.column_id === UNASSIGNED_COLUMN_ID || !t.column_id
                   ? {
-                      ...t,
+                      ...response.items.find((task) => task.id === t.id),
                       column_id: response.column.id,
                     }
                   : t

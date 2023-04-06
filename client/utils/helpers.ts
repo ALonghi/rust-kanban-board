@@ -35,6 +35,11 @@ export const removePositionField = (
   return array.map(toPositionOmitted);
 };
 
+export const isOfSameColumn = (task: ITask, colId?: string): boolean =>
+  !colId || colId === UNASSIGNED_COLUMN_ID
+    ? task.column_id === colId || !task.column_id
+    : task.column_id === task.column_id;
+
 export const mapAfterSwap = (array: ITask[]): ITask[] => {
   return array.map((e, i) => {
     if (i === 0) {
@@ -73,7 +78,6 @@ export const getEmptyGroupedColumn = (array?: ITask[]): GroupedTasks => {
 
 export function groupByColumn(array: ITask[], board: IBoard): GroupedTasks[] {
   let result: GroupedTasks[] = [];
-  console.warn(`board being grouped: ${JSON.stringify(board, null, 2)}`);
   // putting tasks without column first
   result.push(getEmptyGroupedColumn(array));
   // adding tasks with related column

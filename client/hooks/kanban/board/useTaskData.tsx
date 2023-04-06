@@ -1,6 +1,10 @@
 import { ITask } from "@model/task";
 import { CreateTaskRequest } from "@model/dto";
-import { sortByPosition, UNASSIGNED_COLUMN_ID } from "@utils/helpers";
+import {
+  isOfSameColumn,
+  sortByPosition,
+  UNASSIGNED_COLUMN_ID,
+} from "@utils/helpers";
 import TaskService from "@service/taskService";
 import { createToast, IToast } from "@model/toast";
 import { addNotification } from "@stores/notificationStore";
@@ -15,7 +19,7 @@ export const useTaskData = (
 ) => {
   const saveNewTask = (task_request: CreateTaskRequest) => {
     const tasksOfSameColumn =
-      tasks?.filter((t) => t.column_id === task_request.column_id) || [];
+      tasks?.filter((t) => isOfSameColumn(t, task_request.column_id)) || [];
     const maybeWithoutColumn: CreateTaskRequest = {
       ...task_request,
       column_id:

@@ -57,7 +57,7 @@ export default function KanbanView({ board, tasks }: KanbanViewProps) {
             <ColumnHeader
               board={currentBoard}
               column={elem.column}
-              allGroupedTasks={groupedTasks}
+              tasks={currentTasks}
               updateTasks={setCurrentTasks}
               overriddenName={elem.column?.name || UNASSIGNED_COLUMN_NAME}
               updateBoard={setCurrentBoard}
@@ -126,7 +126,7 @@ export default function KanbanView({ board, tasks }: KanbanViewProps) {
         >
           <ColumnHeader
             board={currentBoard}
-            allGroupedTasks={groupedTasks}
+            tasks={currentTasks}
             updateTasks={setCurrentTasks}
             updateBoard={setCurrentBoard}
             setNewTaskData={setNewTaskData}
