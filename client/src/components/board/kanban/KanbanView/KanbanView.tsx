@@ -13,6 +13,8 @@ import {
   UNASSIGNED_COLUMN_ID,
   UNASSIGNED_COLUMN_NAME,
 } from "@utils/helpers";
+import { useState } from "react";
+import FocusedTaskSlider from "@components/board/kanban/FocusedTaskSlider";
 
 type KanbanViewProps = {
   board: IBoard;
@@ -20,6 +22,8 @@ type KanbanViewProps = {
 };
 
 export default function KanbanView({ board, tasks }: KanbanViewProps) {
+  const [focusedTask, setFocusedTask] = useState<ITask | null>();
+
   const {
     currentBoard,
     setCurrentBoard,
@@ -44,8 +48,15 @@ export default function KanbanView({ board, tasks }: KanbanViewProps) {
     board.id
   );
 
+  console.log(`focusedTask ${JSON.stringify(focusedTask)} ${!!focusedTask}`);
+
   return (
     <div className="mx-2 my-8 min-w-full flex flex-1 flex-nowrap items-start gap-x-2 w-fit">
+      <FocusedTaskSlider
+        isOpen={!!focusedTask}
+        closeFun={() => setFocusedTask(null)}
+        task={focusedTask}
+      />
       <DragDropContext onDragEnd={handleDragEnd}>
         {groupedTasks?.filter(keepDefined).map((elem) => (
           <div
@@ -83,11 +94,6 @@ export default function KanbanView({ board, tasks }: KanbanViewProps) {
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
                             className={`${item.title?.toLowerCase()}__items`}
-                            onClick={() =>
-                              console.log(
-                                `Clicked: ${JSON.stringify(item, null, 2)}!`
-                              )
-                            }
                           >
                             <TaskCard
                               boardId={currentBoard.id}
@@ -95,6 +101,10 @@ export default function KanbanView({ board, tasks }: KanbanViewProps) {
                               task={item}
                               onUpdate={saveTaskData}
                               onDelete={deleteTask}
+                              onSelect={() => {
+                                console.log(`clicked! ${JSON.stringify(item)}`);
+                                setFocusedTask(item);
+                              }}
                             />
                           </div>
                         )}
