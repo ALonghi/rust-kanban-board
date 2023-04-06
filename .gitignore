@@ -1,2 +1,8 @@
-/target
-.idea/
+.idea
+.vscode
+node_modules
+target
+.DS_Store
+
+.next/
+out/

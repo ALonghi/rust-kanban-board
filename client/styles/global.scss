@@ -1,0 +1,23 @@
+/* purgecss start ignore */
+@tailwind base;
+@tailwind components;
+/* purgecss end ignore */
+@tailwind utilities;
+
+.text-gradient {
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(
+    270deg,
+    #74ffdcff,
+    #61f1cdff,
+    #4de2bfff,
+    #3ad4b0ff,
+    #27c5a1ff,
+    #13b793ff,
+    #00a884ff
+  );
+  background-size: 200%;
+  background-position: 0%;
+}
