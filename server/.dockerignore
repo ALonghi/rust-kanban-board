@@ -1,0 +1,4 @@
+.dockerignore
+target
+scripts
+Dockerfile

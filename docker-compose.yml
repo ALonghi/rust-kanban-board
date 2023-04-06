@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  kanban-board-frontend:
+    container_name: kanban-board-frontend
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    deploy:   
+      restart_policy:
+        condition: on-failure
+        delay: 3s
+        max_attempts: 3
+        window: 20s
+    ports:
+      - 3000:3000
+    networks:
+      - my_network
+  kanban-board-backend:
+    container_name: kanban-board-backend
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    deploy:   
+      restart_policy:
+        condition: on-failure
+        delay: 3s
+        max_attempts: 3
+        window: 20s
+    ports:
+      - 8080
+    networks:
+      - my_network
+
+  # Add more containers below (nginx, postgres, etc.)
+
+# Define a network, which allows containers to communicate
+# with each other, by using their container name as a hostname
+networks:
+  my_network:
+    external: true
