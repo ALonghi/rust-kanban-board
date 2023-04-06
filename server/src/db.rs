@@ -1,3 +1,4 @@
+use crate::EnvVars;
 use mongodb::options::ClientOptions;
 use mongodb::Client;
 
@@ -9,9 +10,13 @@ pub struct DB {
 }
 
 impl DB {
-    pub async fn init() -> Result<Self> {
+    pub async fn init(env_vars: EnvVars) -> Result<Self> {
         let app_name = String::from("kanban-board-backend");
-        let mut client_options = ClientOptions::parse(format!("mongodb+srv://root:TgjuOAwPkXlKrsSM@cluster0.d9l49vd.mongodb.net/?retryWrites=true&w=majority&appname={}", app_name)).await?;
+        let mut client_options = ClientOptions::parse(format!(
+            "{}/?retryWrites=true&w=majority&appname={}",
+            env_vars.mongo_uri, app_name
+        ))
+        .await?;
         client_options.app_name = Some(app_name);
         Ok(Self {
             client: Client::with_options(client_options)?,

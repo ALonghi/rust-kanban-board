@@ -1,6 +1,9 @@
 "use client";
 
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowTopRightOnSquareIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 import { ITask } from "../../../model/task";
 import SaveIcon from "../../shared/SaveIcon";
 import { useState } from "react";
@@ -15,9 +18,9 @@ type TaskProps = {
   columnId?: IBoardColumn["id"];
   boardId: IBoard["id"];
   onCreate?: (task_request: CreateTaskRequest) => Promise<void>;
-  onUpdate?: (updatedTask: ITask) => Promise<void>;
+  onUpdate?: (updatedTask: ITask) => Promise<ITask>;
   onDelete: (taskId: ITask["id"]) => Promise<void>;
-  // onSelect: (id: TaskModel['id']) => void;
+  onSelect?: () => void;
 };
 
 export default function TaskCard({
@@ -29,13 +32,12 @@ export default function TaskCard({
   onCreate,
   onUpdate,
   onDelete,
+  onSelect,
 }: //
-// onSelect,
 TaskProps) {
   const [showComponent, setShowComponent] = useState<boolean>(
     !!task?.id || true
   );
-  const [isFocused, setIsFocused] = useState<boolean>(!!isFocus);
   const [taskTitle, setTaskTitle] = useState<string>(task.title || "");
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,7 +49,6 @@ TaskProps) {
       ? onDelete(task?.id)
       : Promise.resolve(setShowComponent(false));
     await promise.then(() => {
-      setIsFocused(false);
       setTaskTitle("");
     });
   };
@@ -73,8 +74,6 @@ TaskProps) {
           `Task neither new (${isNew}) nor onUpdate provided (${onUpdate})`
         );
       }
-
-      setIsFocused(false);
     } catch (e) {
       const errorMsg = `Error in executing task related action ${
         e.message || e
@@ -87,7 +86,7 @@ TaskProps) {
     showComponent && (
       <div
         className={`cursor-move relative flex items-start space-x-3 rounded-lg
-            border-0 border-gray-300 bg-white px-4 py-4 shadow-md mt-3 max-w-full h-[5rem]
+            border-0 border-gray-300 bg-white px-4 py-4 shadow-md mt-3 max-w-full h-[6rem]
             `}
       >
         <div className={`relative flex w-full h-full`}>
@@ -95,14 +94,18 @@ TaskProps) {
             className={` flex flex-row opacity-40 justify-center items-center absolute top-0 right-0`}
           >
             {isNew ? (
-              <SaveIcon saveAction={handleSaveTask} classes={`mr-1`} />
+              <SaveIcon saveAction={handleSaveTask} classes={`mr-1 w-4`} />
             ) : (
-              <div
-                className={`mx-2 border-box cursor-pointer`}
-                onClick={handleSelectClick}
-              >
-                {/* <ArrowTopRightOnSquareIcon className={`text-gray-700 w-5 h-5 `} /> */}
-              </div>
+              onSelect && (
+                <div
+                  className={`mx-2 border-box cursor-pointer`}
+                  onClick={() => (onSelect ? onSelect() : null)}
+                >
+                  <ArrowTopRightOnSquareIcon
+                    className={`text-gray-700 w-4 h-4 `}
+                  />
+                </div>
+              )
             )}
 
             <XMarkIcon
@@ -121,25 +124,28 @@ TaskProps) {
                           font-normal text-sm p-0 h-fit max-h-full resize-none w-8/12 text-clip`}
             />
           ) : (
-            <div className={`relative flex flex-col justify-start items-start`}>
+            <div
+              className={`relative flex flex-col justify-start items-start w-8/12 `}
+            >
               <p
-                className={`mr-auto ml-0 overflow-x-none
-                        font-normal text-sm p-0 h-fit max-h-full ${
-                          isFocused ? `w-8/12` : `w-max`
-                        }`}
+                className={`mr-auto ml-0 font-normal text-sm p-0 h-fit max-h-full`}
               >
                 {task.title}
               </p>
-              <div className={`flex flex-row`}>
-                <p className={`text-sm text-emerald-400 mt-2`}>
-                  # {task.id.substring(0, 5)}
-                </p>
-                {task.above_task_id && (
-                  <p className={`text-sm text-red-400 mt-2 ml-4`}>
-                    # {task.above_task_id.substring(0, 5)}
+              {process.env.NODE_ENV === "development" && (
+                <div
+                  className={`flex flex-row w-full justify-between items-center`}
+                >
+                  <p className={`text-sm text-emerald-400 mt-2`}>
+                    # {task.id.substring(0, 5)}
                   </p>
-                )}
-              </div>
+                  {task.above_task_id && (
+                    <p className={`text-sm text-red-400 mt-2 ml-4`}>
+                      # {task.above_task_id.substring(0, 5)}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>

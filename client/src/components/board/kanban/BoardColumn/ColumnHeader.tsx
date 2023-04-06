@@ -134,7 +134,7 @@ export default function ColumnHeader({
           </div>
         )}
       </div>
-      {column?.id && (
+      {column?.id && process.env.NODE_ENV === "development" && (
         <p className={`mt-[-1rem] text-sm text-left text-emerald-400`}>
           {column?.id?.substring(0, 5)}
         </p>

@@ -29,6 +29,22 @@ export default class TaskService {
     }
   }
 
+  static async getTaskById(taskId: ITask["id"]): Promise<ITask> {
+    try {
+      Logger.info(`Fetching task ${taskId}`);
+      const response = (await axios
+        .get(`/tasks/${taskId}`)
+        .then((res) => res.data)) as ApiResponse<ITask>;
+      if (!response.success || !response.data)
+        throw new Error(response.error_message);
+      Logger.info(`Task ${taskId} fetched.`);
+      return response.data;
+    } catch (e) {
+      Logger.error(`Error in fetching task ${taskId}: ${e.message || e}`);
+      return Promise.reject(e);
+    }
+  }
+
   static async getTasksByBoardId(board_id: string): Promise<ITask[]> {
     try {
       Logger.info(`Getting tasks for board ${board_id}..`);

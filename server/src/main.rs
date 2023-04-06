@@ -1,10 +1,7 @@
 use std::net::{Ipv4Addr, SocketAddr};
 
 use clap::Parser;
-use dotenv::dotenv;
 use tracing::{info, Level};
-use tracing_subscriber::layer::SubscriberExt;
-use tracing_subscriber::util::SubscriberInitExt;
 use tracing_subscriber::FmtSubscriber;
 
 use crate::config::Config;
@@ -20,15 +17,23 @@ mod server;
 mod task;
 mod util;
 
+#[derive(Clone, Debug)]
+pub struct EnvVars {
+    mongo_uri: String,
+}
+
 #[tokio::main]
 async fn main() {
-    dotenv().ok();
+    dotenv::dotenv().expect("Error in reading .env file!");
     // Setup tracing
     let subscriber = FmtSubscriber::builder()
         .with_max_level(Level::DEBUG)
         .finish();
     tracing::subscriber::set_global_default(subscriber).expect("setting default subscriber failed");
 
+    let env_vars = EnvVars {
+        mongo_uri: std::env::var("MONGO_URI").expect("MONGO_URI environment variable must be set."),
+    };
     // Parse command line arguments
     let config = Config::parse();
 
@@ -36,7 +41,7 @@ async fn main() {
     let addr = SocketAddr::from((Ipv4Addr::UNSPECIFIED, config.port));
     info!("listening on {}", addr);
 
-    let app = app().await.unwrap();
+    let app = app(env_vars).await.unwrap();
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
         .await

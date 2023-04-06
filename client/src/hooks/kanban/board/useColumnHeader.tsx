@@ -10,7 +10,6 @@ import { useState } from "react";
 import BoardService from "@service/boardService";
 import { createToast, IToast } from "@model/toast";
 import { addNotification } from "@stores/notificationStore";
-import { useRouter } from "next/router";
 import Logger from "@utils/logging";
 
 export const useColumnHeader = (

@@ -4,23 +4,20 @@ use axum::extract::{Path, State};
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum::Json;
-use bson::DateTime;
-use chrono::Utc;
-use futures::TryFutureExt;
 use tracing::{debug, error};
 
-use crate::board::model::{Board, BoardColumn};
+use crate::board::model::Board;
 use crate::board::service as board_service;
 use crate::board::utils::{create_and_add_column_to, filter_column_from};
 use crate::config::AppState;
 use crate::dto::{
-    CreateBoardColumnRequest, CreateBoardColumnResponse, CreateBoardRequest, CreateTaskRequest,
-    Response, UpdateBoardRequest,
+    CreateBoardColumnRequest, CreateBoardColumnResponse, CreateBoardRequest, Response,
+    UpdateBoardRequest,
 };
-use crate::error::{AppError, BoardRepoError, TaskRepoError};
+use crate::error::{AppError, TaskRepoError};
 use crate::task::model::Task;
 use crate::task::service as task_service;
-use crate::task::utils::{build_hierarchy_set, map_task_db_to_linked};
+use crate::task::utils::map_task_db_to_linked;
 
 // Returns all tasks
 #[axum_macros::debug_handler]

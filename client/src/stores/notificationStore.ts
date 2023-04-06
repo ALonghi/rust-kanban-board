@@ -1,6 +1,6 @@
 import { atom } from "nanostores";
-import { IToast } from "../model/toast";
 import Logger from "@utils/logging";
+import { IToast } from "@model/toast";
 
 export const notifications = atom<IToast[]>([]);
 

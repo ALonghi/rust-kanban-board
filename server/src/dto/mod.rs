@@ -2,13 +2,9 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 use std::collections::LinkedList;
-use uuid::Uuid;
 
 use crate::task::model::SortedTask;
-use crate::{
-    board::model::{Board, BoardColumn},
-    task::model::Task,
-};
+use crate::{board::model::BoardColumn, task::model::Task};
 
 #[skip_serializing_none]
 #[derive(Clone, Debug, Serialize, Deserialize)]

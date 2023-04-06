@@ -2,7 +2,7 @@
 
 Backend for a kanban board project written in Rust
 
-Frontend of the project can be found at [https://github.com/ALonghi/kanban-board-frontend](https://github.com/ALonghi/kanban-board-frontend)
+Frontend of the project can be found in the `client` folder of this repo
 
 
 ## Known Limitations
