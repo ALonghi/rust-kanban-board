@@ -3,15 +3,13 @@ use std::str::FromStr;
 use axum::extract::FromRef;
 use chrono::Utc;
 use mongodb::bson::doc;
-use mongodb::bson::{Array, Bson};
 // don't forget this!
 use tokio_stream::StreamExt;
 use uuid::Uuid;
 
 use crate::board::model::{Board, BoardColumn};
-use crate::error::{AppError, TaskRepoError};
+use crate::error::AppError;
 use crate::error::{BoardRepoError, Result};
-use crate::util::get_optional_uuid;
 
 pub async fn parse_boards(
     mut cursor: mongodb::Cursor<bson::document::Document>,

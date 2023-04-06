@@ -1,9 +1,9 @@
 import { Dialog } from "@headlessui/react";
-import { useState } from "react";
+import React, { useState } from "react";
 import Modal from "../shared/Modal";
-import Spinner from "../shared/Spinner";
-import { CreateBoardRequest, EMPTY_BOARD_REQ } from "../../model/dto";
 import InputForm from "@components/shared/InputForm";
+import { CreateBoardRequest, EMPTY_BOARD_REQ } from "@model/dto";
+import Spinner from "@components/shared/Spinner";
 
 type CreateBoardProps = {
   open: boolean;

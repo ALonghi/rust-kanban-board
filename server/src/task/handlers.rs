@@ -5,8 +5,6 @@ use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum::Json;
 use chrono::Utc;
-use itertools::Itertools;
-use tracing::log::info;
 use tracing::{debug, error};
 
 use crate::config::AppState;

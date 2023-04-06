@@ -134,11 +134,6 @@ export default function ColumnHeader({
           </div>
         )}
       </div>
-      {column?.id && (
-        <p className={`mt-[-1rem] text-sm text-left text-emerald-400`}>
-          {column?.id?.substring(0, 5)}
-        </p>
-      )}
       <div
         className={`bg-gray-100 hover:bg-gray-200 py-0.5 px-4 mb-2 rounded-md w-full cursor-pointer`}
         onClick={() =>

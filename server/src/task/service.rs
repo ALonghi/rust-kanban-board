@@ -1,10 +1,7 @@
 use async_recursion::async_recursion;
 use bson::{doc, Document};
 use chrono::Utc;
-use futures::stream;
-use mongodb::error::{
-    Error, ErrorKind, TRANSIENT_TRANSACTION_ERROR, UNKNOWN_TRANSACTION_COMMIT_RESULT,
-};
+use mongodb::error::{Error, TRANSIENT_TRANSACTION_ERROR, UNKNOWN_TRANSACTION_COMMIT_RESULT};
 use mongodb::options::{
     Acknowledgment, ReadConcern, SessionOptions, TransactionOptions, WriteConcern,
 };
@@ -13,9 +10,8 @@ use tracing::debug;
 use tracing::log::error;
 
 use crate::config::AppState;
-use crate::error::AppError::{MongoError, TaskRepo};
+use crate::error::AppError::MongoError;
 use crate::error::Result;
-use crate::error::TaskRepoError::TransactionError;
 use crate::error::{AppError, TaskRepoError};
 use crate::task::model::Task;
 use crate::task::utils::{doc_to_task, parse_tasks, task_to_doc};

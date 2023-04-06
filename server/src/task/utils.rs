@@ -1,4 +1,3 @@
-use std::borrow::BorrowMut;
 use std::collections::{HashMap, LinkedList};
 use std::str::FromStr;
 
@@ -7,8 +6,6 @@ use chrono::Utc;
 use mongodb::bson::doc;
 // don't forget this!
 use tokio_stream::StreamExt;
-use tracing::error;
-use tracing::log::debug;
 use uuid::Uuid;
 
 use crate::error::Result;
@@ -19,7 +16,7 @@ use crate::util::get_optional_uuid;
 pub fn map_task_db_to_linked(elems: Vec<Task>) -> LinkedList<SortedTask> {
     grouped_by_column(&elems)
         .into_iter()
-        .flat_map(|(column_id, tasks)| {
+        .flat_map(|(_, tasks)| {
             build_hierarchy_set(tasks.clone())
                 .into_iter()
                 .enumerate()
