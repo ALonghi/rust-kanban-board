@@ -6,7 +6,7 @@ This project was just created for experimenting with Rust
 
 ### Run the backend
 
-You need to first setup a `.env` file in the `server` folder and specify the MONGO_URI environment variable.
+You need to first set up a `.env` file in the `server` folder and specify the `MONGO_URI` environment variable.
 Then you may run:
 
 ```bash
@@ -19,4 +19,6 @@ cargo run
 cd client
 npm run dev
 ```
+
+You may now open the app at [http://localhost:3000](http://localhost:3000)
 
