@@ -3,7 +3,6 @@
 import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useColumnHeader } from "@hooks/kanban/board/useColumnHeader";
 import { IBoard, IBoardColumn } from "@model/board";
-import GroupedTasks from "@model/groupedTasks";
 import { getEmptyTask, ITask } from "@model/task";
 import SaveIcon from "@components/shared/SaveIcon";
 import { UNASSIGNED_COLUMN_ID } from "@utils/helpers";
@@ -70,6 +69,10 @@ export default function ColumnHeader({
                 setShowWarning(false)
               );
             }}
+            totalTasksRelated={
+              tasks?.filter((t) => t.column_id === currentColumn?.id)?.length ||
+              0
+            }
           />
         )}
         {currentColumn?.name || overriddenName ? (

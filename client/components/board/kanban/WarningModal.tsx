@@ -7,12 +7,14 @@ type WarningModalProps = {
   closeFun: Function;
   column?: IBoardColumn;
   confirmedAction: Function;
+  totalTasksRelated: number;
 };
 const WarningModal = ({
   isOpen,
   closeFun,
   column,
   confirmedAction,
+  totalTasksRelated,
 }: WarningModalProps) => {
   return (
     column && (
@@ -26,14 +28,21 @@ const WarningModal = ({
             className={`text-sm text-center text-gray-500  mt-4 gap-y-1 flex flex-col`}
           >
             <p className={`underline `}>This action is irreversible.</p>
-            <p> All related tasks will be deleted if not moved before.</p>
+            {totalTasksRelated > 0 && (
+              <p>
+                {" "}
+                All {totalTasksRelated} linked tasks will be deleted if not
+                moved before.
+              </p>
+            )}
           </div>
           <button
             onClick={() => confirmedAction()}
             type={"button"}
-            className={`hover:bg-theme-500 bg-theme-600 text-white rounded-md mt-10 mb-7 py-2 px-8 uppercase text-sm`}
+            className={`hover:bg-theme-500 bg-theme-600 text-white rounded-md mt-10 mb-7 py-2 px-8 uppercase text-sm w-full`}
           >
-            Delete column and related tasks
+            Delete column{" "}
+            {totalTasksRelated > 0 && `and ${totalTasksRelated} linked tasks`}
           </button>
         </div>
       </Modal>
