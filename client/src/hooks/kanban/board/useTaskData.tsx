@@ -62,15 +62,38 @@ export const useTaskData = (
       });
   };
 
-  const saveTaskData = async (task: ITask): Promise<void> => {
-    return await TaskService.updateTask(task, boardId).then(() => {
-      setNewTaskData(null);
-      const toast: IToast = createToast(
-        "Task updated successfully.",
-        "success"
-      );
-      addNotification(toast);
-    });
+  const saveTaskData = async (task: ITask): Promise<ITask> => {
+    let toUpdate: ITask = {
+      ...task,
+      column_id:
+        task.column_id === UNASSIGNED_COLUMN_ID || !task.column_id
+          ? null
+          : task.column_id,
+    };
+    return await TaskService.updateTask(toUpdate, boardId)
+      .then((updated) => {
+        updateTasks((prev) =>
+          prev.map((t) => (t.id === toUpdate.id ? toUpdate : t))
+        );
+        return Promise.resolve(updated);
+      })
+      .then((updated) => {
+        const toast: IToast = createToast(
+          "Task updated successfully.",
+          "success"
+        );
+        addNotification(toast);
+        setNewTaskData(null);
+        return Promise.resolve(updated);
+      })
+      .catch((e) => {
+        const toast: IToast = createToast(
+          `Error in updating Task: ${e.message || e}`,
+          "error"
+        );
+        addNotification(toast);
+        return Promise.reject(e);
+      });
   };
 
   const deleteTask = async (taskId: ITask["id"]): Promise<void> => {

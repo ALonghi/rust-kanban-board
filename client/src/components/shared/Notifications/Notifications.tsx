@@ -1,8 +1,8 @@
 import { useStore } from "@nanostores/react";
 import React from "react";
-import { IToast } from "../../../model/toast";
-import { notifications } from "../../../stores/notificationStore";
-import NotificationToast from "./NotificationToast/NotificationToast";
+import { notifications } from "@stores/notificationStore";
+import { IToast } from "@model/toast";
+import NotificationToast from "@components/shared/Notifications/NotificationToast/NotificationToast";
 
 const Notifications: React.FC = () => {
   const toastNotifications = useStore(notifications);
@@ -11,7 +11,7 @@ const Notifications: React.FC = () => {
     <>
       <div
         className={`max-h-max h-min w-[20rem] z-50 fixed inset-0 flex justify-items-start 
-                flex-column sm:items-start top-4 right-4 left-auto`}
+                flex-col sm:items-start top-4 right-4 left-auto`}
       >
         {toastNotifications.map((notification: IToast) => (
           <NotificationToast
