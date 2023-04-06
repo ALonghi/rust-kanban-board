@@ -46,13 +46,6 @@ export const useColumnHeader = (
       };
       return await BoardService.createBoardColumn(req, board.id)
         .then((response) => {
-          console.log(
-            `reponse afte rcolumn creation: ${JSON.stringify(
-              response,
-              null,
-              2
-            )}`
-          );
           updateBoard((p) => ({
             ...p,
             columns: [response.column, ...p.columns],
@@ -68,9 +61,6 @@ export const useColumnHeader = (
                   : t
               ),
             ];
-            console.log(
-              `newItems here are: ${JSON.stringify(newItems, null, 2)}`
-            );
             return newItems;
           });
         })

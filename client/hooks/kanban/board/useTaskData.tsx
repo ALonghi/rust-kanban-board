@@ -87,7 +87,6 @@ export const useTaskData = (
           "error"
         );
         addNotification(toast);
-        console.error(`error in task delete ${err?.message} ${err}`);
       });
   };
 

@@ -33,7 +33,6 @@ export const useDraggable = (
   boardId: IBoard["id"]
 ) => {
   function handleDragEnd(props) {
-    console.log(`handleDragEnd props :${JSON.stringify(props, null, 2)}`);
     if (!props.destination) return;
 
     const dragged: DragItem | null = props.source;
@@ -121,33 +120,6 @@ export const useDraggable = (
         handleTasksUpdate(toUpdate, boardId);
       }
     }
-
-    // console.log(`itemMoved: ${JSON.stringify(itemMoved, null, 2)}`)
-    // let draggedColumnFiltered = tasks.filter((t) => t.column_id === dragged.droppableId)
-    // console.log(`draggedColumnFiltered before splice: ${JSON.stringify(draggedColumnFiltered, null, 2)}`)
-    // draggedColumnFiltered.splice(dragged.index, 1)
-    // console.log(`draggedColumnFiltered after splice: ${JSON.stringify(draggedColumnFiltered, null, 2)}`)
-    // const draggedColumnMapped = mapAfterSwap(draggedColumnFiltered)
-    //
-    // let overColumnFiltered = tasks.filter((t) => t.column_id === over.droppableId)
-    // console.log(`overColumnFiltered before splice: ${JSON.stringify(overColumnFiltered, null, 2)}`)
-    // overColumnFiltered.splice(over.index, 0, itemMoved)
-    // console.log(`overColumnFiltered after splice: ${JSON.stringify(overColumnFiltered, null, 2)}`)
-    // const overColumnMapped = mapAfterSwap(overColumnFiltered)
-    // console.log(`overColumnMapped ${JSON.stringify(overColumnMapped, null, 2)}`)
-    // const previousFiltered = tasks?.filter(t => t.column_id !== dragged.droppableId && t.column_id !== over.droppableId) || []
-    // console.log(`previousFiltered ${JSON.stringify(previousFiltered, null, 2)}`)
-    // const result = uniqueArrayElements([
-    //     ...previousFiltered,
-    //     ...overColumnMapped,
-    //     ...draggedColumnMapped]
-    // )
-    // console.log(`result after swap ${JSON.stringify(result, null, 2)}`)
-    // const difference = getDifference(
-    //     removePositionField(tasks),
-    //     removePositionField(result)
-    // );
-    // handleTasksUpdate(difference, boardId);
   }
 
   const handleTasksUpdate = (

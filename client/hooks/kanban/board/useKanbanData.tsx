@@ -19,7 +19,6 @@ export const useKanbanData = (board: IBoard, tasks: ITask[]) => {
   );
 
   useEffect(() => {
-    console.error("groupedf task updated!!");
     setGroupedTasks(() => mapGroupedTasks());
   }, [currentTasks]);
 

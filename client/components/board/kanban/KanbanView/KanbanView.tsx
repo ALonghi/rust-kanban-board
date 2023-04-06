@@ -44,7 +44,6 @@ export default function KanbanView({ board, tasks }: KanbanViewProps) {
     board.id
   );
 
-  console.info(`grouped tasks: ${JSON.stringify(groupedTasks, null, 2)}`);
   return (
     <div className="mx-2 my-8 min-w-full flex flex-1 flex-nowrap items-start gap-x-2 w-fit">
       <DragDropContext onDragEnd={handleDragEnd}>

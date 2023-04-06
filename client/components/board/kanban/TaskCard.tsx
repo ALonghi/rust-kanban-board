@@ -79,7 +79,6 @@ TaskProps) {
       const errorMsg = `Error in executing task related action ${
         e.message || e
       } `;
-      console.error(errorMsg);
       createToast(errorMsg, "error");
     }
   };
