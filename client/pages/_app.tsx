@@ -1,0 +1,25 @@
+import "@styles/global.scss";
+import type { AppProps } from "next/app";
+import Head from "next/head";
+import React from "react";
+import Sidebar from "@components/shared/Sidebar";
+
+function MyApp({ Component, pageProps }: AppProps) {
+  return (
+    <>
+      <Head>
+        <title>Kanban board</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="shortcut icon" href="icons/favicon.svg" />
+      </Head>
+      <div className="flex flex-row bg-white">
+        <Sidebar />
+        <div className="sm:w-10/12 mx-auto">
+          <Component {...pageProps} />
+        </div>
+      </div>
+    </>
+  );
+}
+
+export default MyApp;

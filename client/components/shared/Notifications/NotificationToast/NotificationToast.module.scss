@@ -1,0 +1,16 @@
+.bounceFromRight {
+  animation: bounceFromRight ease-out 200ms both 100ms;
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+@keyframes bounceFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
