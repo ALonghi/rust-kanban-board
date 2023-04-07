@@ -132,20 +132,20 @@ TaskProps) {
               >
                 {task.title}
               </p>
-              {process.env.NODE_ENV === "development" && (
-                <div
-                  className={`flex flex-row w-full justify-between items-center`}
-                >
-                  <p className={`text-sm text-emerald-400 mt-2`}>
-                    # {task.id.substring(0, 5)}
-                  </p>
-                  {task.above_task_id && (
-                    <p className={`text-sm text-red-400 mt-2 ml-4`}>
-                      # {task.above_task_id.substring(0, 5)}
-                    </p>
-                  )}
-                </div>
-              )}
+              {/*{process.env.NODE_ENV === "development" && (*/}
+              {/*  <div*/}
+              {/*    className={`flex flex-row w-full justify-between items-center`}*/}
+              {/*  >*/}
+              {/*    <p className={`text-sm text-emerald-400 mt-2`}>*/}
+              {/*      # {task.id.substring(0, 5)}*/}
+              {/*    </p>*/}
+              {/*    {task.above_task_id && (*/}
+              {/*      <p className={`text-sm text-red-400 mt-2 ml-4`}>*/}
+              {/*        # {task.above_task_id.substring(0, 5)}*/}
+              {/*      </p>*/}
+              {/*    )}*/}
+              {/*  </div>*/}
+              {/*)}*/}
             </div>
           )}
         </div>

@@ -22,3 +22,9 @@ npm run dev
 
 You may now open the app at [http://localhost:3000](http://localhost:3000)
 
+
+## App preview
+
+![homepage](./docs/screenshot3.png)
+![boardpage](./docs/screenshot1.png)
+![taskopen](./docs/screenshot2.png)
