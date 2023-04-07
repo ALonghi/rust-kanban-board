@@ -38,26 +38,7 @@ export const removePositionField = (
 export const isOfSameColumn = (task: ITask, colId?: string): boolean =>
   !colId || colId === UNASSIGNED_COLUMN_ID
     ? task.column_id === colId || !task.column_id
-    : task.column_id === task.column_id;
-
-export const mapAfterSwap = (array: ITask[]): ITask[] => {
-  return array.map((e, i) => {
-    if (i === 0) {
-      return { ...e, position: i, above_task_id: null };
-    } else {
-      return { ...e, position: i, above_task_id: array[i - 1]?.id };
-    }
-  });
-};
-
-export const getDifference = (
-  initialArray: Omit<ITask, "position">[],
-  newArray: Omit<ITask, "position">[]
-): Omit<ITask, "position">[] =>
-  newArray.filter((t, i) => {
-    const initialVersion = initialArray.find((t2) => t2.id === t.id);
-    return initialVersion?.above_task_id !== t.above_task_id;
-  });
+    : task.column_id === colId;
 
 export const getEmptyGroupedColumn = (array?: ITask[]): GroupedTasks => {
   const unassignedColumn: IBoardColumn = {

@@ -48,21 +48,22 @@ export default function KanbanView({ board, tasks }: KanbanViewProps) {
     board.id
   );
 
-  console.log(`focusedTask ${JSON.stringify(focusedTask)} ${!!focusedTask}`);
-
   return (
     <div className="mx-2 my-8 min-w-full flex flex-1 flex-nowrap items-start gap-x-2 w-fit">
       <FocusedTaskSlider
         isOpen={!!focusedTask}
         closeFun={() => setFocusedTask(null)}
         task={focusedTask}
+        saveTask={saveTaskData}
+        board={currentBoard}
+        tasks={currentTasks}
       />
       <DragDropContext onDragEnd={handleDragEnd}>
         {groupedTasks?.filter(keepDefined).map((elem) => (
           <div
             className={`${elem.columnId}__wrapper
                             flex flex-col justify-start items-center mx-4 min-h-[80vh] 
-                 w-[14rem] overflow-x-visible `}
+                 w-[15rem] overflow-x-visible `}
             key={elem.columnId || UNASSIGNED_COLUMN_ID}
           >
             <ColumnHeader
@@ -102,7 +103,6 @@ export default function KanbanView({ board, tasks }: KanbanViewProps) {
                               onUpdate={saveTaskData}
                               onDelete={deleteTask}
                               onSelect={() => {
-                                console.log(`clicked! ${JSON.stringify(item)}`);
                                 setFocusedTask(item);
                               }}
                             />

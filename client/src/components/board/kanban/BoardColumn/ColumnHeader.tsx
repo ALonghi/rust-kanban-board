@@ -134,6 +134,14 @@ export default function ColumnHeader({
           </div>
         )}
       </div>
+<<<<<<< HEAD
+=======
+      {/*{column?.id && process.env.NODE_ENV === "development" && (*/}
+      {/*  <p className={`mt-[-1rem] text-sm text-left text-emerald-400`}>*/}
+      {/*    {column?.id?.substring(0, 5)}*/}
+      {/*  </p>*/}
+      {/*)}*/}
+>>>>>>> origin/main
       <div
         className={`bg-gray-100 hover:bg-gray-200 py-0.5 px-4 mb-2 rounded-md w-full cursor-pointer`}
         onClick={() =>

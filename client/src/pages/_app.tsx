@@ -3,6 +3,7 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import React from "react";
 import Sidebar from "@components/shared/Sidebar";
+import Notifications from "@components/shared/Notifications/Notifications";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -14,6 +15,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       </Head>
       <div className="flex flex-row bg-white">
         <Sidebar />
+        <Notifications />
         <div className="sm:w-10/12 mx-auto">
           <Component {...pageProps} />
         </div>
