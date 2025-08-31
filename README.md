@@ -46,10 +46,10 @@ A simple, modern Kanban board with a **Next.js/React** frontend and a **Rust (Ax
 
 ## Monorepo Layout
 
-├─ client/ # Next.js frontend
-├─ server/ # Rust (Axum) backend
-├─ docs/ # Screenshots used in this README
-└─ README.md
+- client/ # Next.js frontend
+- server/ # Rust (Axum) backend
+- docs/ # Screenshots used in this README
+- README.md
 
 
 ## How to run
