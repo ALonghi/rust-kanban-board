@@ -44,7 +44,7 @@ export default function FocusedTaskSlider({
     if (currentTask.column_id !== task.id) {
       // updating position of task into its new column
       const tasksOfSameColumn = sortByPosition(
-        tasks.filter((t) => isOfSameColumn(t, currentTask.column_id))
+        tasks.filter((t) => isOfSameColumn(t, currentTask.column_id)),
       );
       const lastOfSameColumn: ITask | null = tasksOfSameColumn
         ? tasksOfSameColumn[tasksOfSameColumn.length - 1]
@@ -56,11 +56,11 @@ export default function FocusedTaskSlider({
       };
       // need to update old column task pointing at the current one
       const elemsOfPreviousColumns = tasks.filter((t) =>
-        isOfSameColumn(t, task.column_id)
+        isOfSameColumn(t, task.column_id),
       );
       const pointingAtCurrentOne: ITask | null =
         elemsOfPreviousColumns.find(
-          (t) => t.above_task_id === currentTask.id
+          (t) => t.above_task_id === currentTask.id,
         ) || null;
       if (pointingAtCurrentOne) {
         const pointingToUpdate: ITask = {
@@ -71,7 +71,7 @@ export default function FocusedTaskSlider({
         await saveTask(pointingToUpdate).catch((e) => {
           const toast: IToast = createToast(
             `Error in updating referenced Task: ${e.message || e}`,
-            "error"
+            "error",
           );
           addNotification(toast);
         });
@@ -213,7 +213,7 @@ export default function FocusedTaskSlider({
                           <SelectBox
                             selected={
                               board.columns.find(
-                                (c) => c.id === currentTask.column_id
+                                (c) => c.id === currentTask.column_id,
                               ) || getEmptyGroupedColumn().column
                             }
                             setSelected={(colId) => {

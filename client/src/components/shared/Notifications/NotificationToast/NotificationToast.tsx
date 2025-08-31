@@ -41,9 +41,9 @@ const NotificationToast: React.VFC<NotificationToastProps> = ({
                 notification.type === `success`
                   ? `bg-[#86efac]`
                   : notification.type === `info`
-                  ? `bg-yellow-200`
-                  : `bg-red-400`,
-                "max-w-sm w-full shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden"
+                    ? `bg-yellow-200`
+                    : `bg-red-400`,
+                "max-w-sm w-full shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden",
               )}
             >
               <div className="p-3">

@@ -18,7 +18,7 @@ const BoardPage = () => {
         const boardId = router.query.board_id?.toString();
         if (boardId) {
           const board = await BoardService.getBoard(
-            router.query.board_id?.toString()
+            router.query.board_id?.toString(),
           );
           const tasks = await TaskService.getTasksByBoardId(board.id);
           setCurrentBoard(() => board);

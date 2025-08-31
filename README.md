@@ -67,7 +67,7 @@ cargo run
 ### Run the frontend
 ```bash
 cd client
-npm run dev
+pnpm run dev
 ```
 
 You may now open the app at [http://localhost:3000](http://localhost:3000)

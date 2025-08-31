@@ -16,7 +16,7 @@ export const keepDefined = <T>(item: T | undefined): item is T => {
   return !!item;
 };
 export const removePositionField = (
-  array: ITask[]
+  array: ITask[],
 ): Omit<ITask, "position">[] => {
   const toPositionOmitted = (task: ITask): Omit<ITask, "position"> => {
     const result: Omit<ITask, "position"> = {
@@ -69,7 +69,7 @@ export function groupByColumn(array: ITask[], board: IBoard): GroupedTasks[] {
       columnId: column.id,
       column: column,
       items: sortByPosition(
-        withColumn.filter((t) => column.id === t.column_id)
+        withColumn.filter((t) => column.id === t.column_id),
       ),
     })),
   ];

@@ -49,7 +49,7 @@ export default function SelectBox({
                     className={({ active }) =>
                       Utils.classNames(
                         active ? "bg-theme-600 text-white" : "text-gray-900",
-                        "relative cursor-default select-none py-2 pl-3 pr-9"
+                        "relative cursor-default select-none py-2 pl-3 pr-9",
                       )
                     }
                     value={column.id}
@@ -59,7 +59,7 @@ export default function SelectBox({
                         <span
                           className={Utils.classNames(
                             selected ? "font-semibold" : "font-normal",
-                            "block truncate"
+                            "block truncate",
                           )}
                         >
                           {column.name}
@@ -69,7 +69,7 @@ export default function SelectBox({
                           <span
                             className={Utils.classNames(
                               active ? "text-white" : "text-theme-600",
-                              "absolute inset-y-0 right-0 flex items-center pr-4"
+                              "absolute inset-y-0 right-0 flex items-center pr-4",
                             )}
                           >
                             <CheckIcon className="h-5 w-5" aria-hidden="true" />

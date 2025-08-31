@@ -20,15 +20,15 @@ export const useColumnHeader = (
   setNewTaskData: (task: Omit<ITask, "id" | "created_at" | "position">) => void,
   updateBoardAfterColumnRemoval?: (
     newBoard: IBoard,
-    colId: IBoardColumn["id"]
+    colId: IBoardColumn["id"],
   ) => void,
-  column?: IBoardColumn
+  column?: IBoardColumn,
 ) => {
   const [currentColumn, setCurrentColumn] = useState<IBoardColumn | null>(
-    column || null
+    column || null,
   );
   const [newColumnName, setNewColumnName] = useState<string>(
-    column?.name || ""
+    column?.name || "",
   );
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const saveColumn = async () => {
@@ -54,7 +54,7 @@ export const useColumnHeader = (
                       ...response.items.find((task) => task.id === t.id),
                       column_id: response.column.id,
                     }
-                  : t
+                  : t,
               ),
             ];
             return newItems;
@@ -68,7 +68,7 @@ export const useColumnHeader = (
       const updatedBoard: IBoard = {
         ...board,
         columns: board.columns.map((c) =>
-          c.id === currentColumn?.id ? { ...c, name: currentColumn.name } : c
+          c.id === currentColumn?.id ? { ...c, name: currentColumn.name } : c,
         ),
       };
       return await BoardService.updateBoard(updatedBoard)
@@ -76,7 +76,7 @@ export const useColumnHeader = (
           updateBoard(() => response);
           const toast: IToast = createToast(
             "Board updated successfully.",
-            "success"
+            "success",
           );
           addNotification(toast);
           setIsTyping(false);
@@ -85,13 +85,13 @@ export const useColumnHeader = (
         .catch((err) => {
           const toast: IToast = createToast(
             `Error in updating board: ${err.message} `,
-            "error"
+            "error",
           );
           addNotification(toast);
           Logger.error(
             `Error while updating board ${updatedBoard.id}: ${
               err.message || err
-            }`
+            }`,
           );
         });
     }
@@ -106,14 +106,14 @@ export const useColumnHeader = (
             : null;
           const toast: IToast = createToast(
             "Column deleted successfully.",
-            "success"
+            "success",
           );
           addNotification(toast);
         })
         .catch((e) => {
           const toast: IToast = createToast(
             `Error in deleting column: ${e.message || e}`,
-            "error"
+            "error",
           );
           addNotification(toast);
         });

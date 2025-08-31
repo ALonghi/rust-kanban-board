@@ -17,12 +17,12 @@ export default class BoardService {
       if (!response.success || !response.data)
         throw new Error(response.error_message);
       Logger.info(
-        `Added board ${response.data?.title} with id ${response.data?.id}`
+        `Added board ${response.data?.title} with id ${response.data?.id}`,
       );
       return response.data;
     } catch (e) {
       Logger.error(
-        `Error in creating board (${JSON.stringify(board)}): ${e.message || e}`
+        `Error in creating board (${JSON.stringify(board)}): ${e.message || e}`,
       );
       return Promise.reject(e);
     }
@@ -60,11 +60,11 @@ export default class BoardService {
 
   static async createBoardColumn(
     request: CreateBoardRequest,
-    boardId: IBoard["id"]
+    boardId: IBoard["id"],
   ): Promise<CreateBoardColumnResponse> {
     try {
       Logger.info(
-        `Adding board column ${JSON.stringify(request)} for board ${boardId}`
+        `Adding board column ${JSON.stringify(request)} for board ${boardId}`,
       );
       const response = (await axios
         .post(`/boards/${boardId}/columns`, request)
@@ -76,8 +76,8 @@ export default class BoardService {
     } catch (e) {
       Logger.error(
         `Error in creating board column (${JSON.stringify(
-          request
-        )}) for board ${boardId}: ${e.message || e}`
+          request,
+        )}) for board ${boardId}: ${e.message || e}`,
       );
       return Promise.reject(e);
     }
@@ -85,7 +85,7 @@ export default class BoardService {
 
   static async deleteBoardColumn(
     boardId: IBoard["id"],
-    columnId: IBoardColumn["id"]
+    columnId: IBoardColumn["id"],
   ): Promise<IBoard> {
     try {
       Logger.info(`Deleting board column ${columnId} for board ${boardId}`);
@@ -95,14 +95,14 @@ export default class BoardService {
       if (!response.success || !response.data)
         throw new Error(response.error_message);
       Logger.info(
-        `removed board column with id ${columnId} from board ${boardId}`
+        `removed board column with id ${columnId} from board ${boardId}`,
       );
       return response.data;
     } catch (e) {
       Logger.error(
         `Error Deleting board column ${columnId} for board ${boardId}: ${
           e.message || e
-        }`
+        }`,
       );
       return Promise.reject(e);
     }
@@ -121,8 +121,8 @@ export default class BoardService {
     } catch (e) {
       Logger.error(
         `Error in updating board columns (${board.id}) (${JSON.stringify(
-          board?.columns
-        )}: ${e.message || e}`
+          board?.columns,
+        )}: ${e.message || e}`,
       );
       return Promise.reject(e);
     }

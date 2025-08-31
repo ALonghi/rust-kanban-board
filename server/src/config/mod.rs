@@ -15,7 +15,7 @@ pub struct AppState {
     pub client: Client,
 }
 
-const DB_NAME: &str = "rust-kanban-board";
+const DB_NAME: &str = "rust-kanban-board-local";
 
 impl AppState {
     pub fn get_database(&self) -> Database {

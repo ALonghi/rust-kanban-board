@@ -33,8 +33,8 @@ const InputForm: React.FC<InputFormProps> = (props) => {
              ${
                props.fullWidth ? `w-full` : `w-max`
              } sm:text-sm border-gray-400 rounded-md ${Utils.classNames(
-            props.inputClasses
-          )} `}
+               props.inputClasses,
+             )} `}
           placeholder={props.placeholder}
           onChange={(e) => props.updateValue(e.target.value)}
         />

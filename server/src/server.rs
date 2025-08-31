@@ -34,7 +34,8 @@ pub async fn app(env_vars: EnvVars) -> Result<Router> {
             Method::OPTIONS,
         ])
         // allow requests from any origin
-        .allow_origin(AllowOrigin::any());
+        .allow_origin(AllowOrigin::any())
+        .allow_headers([header::CONTENT_TYPE]);
 
     // Build our middleware stack
     let middleware = ServiceBuilder::new()

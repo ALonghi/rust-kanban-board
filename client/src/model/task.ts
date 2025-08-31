@@ -20,7 +20,7 @@ export interface IDragItem {
 
 export const getEmptyTask = (
   boardId: IBoard["id"],
-  columnId?: IBoardColumn["id"]
+  columnId?: IBoardColumn["id"],
 ): Omit<ITask, "id" | "created_at" | "position"> => ({
   title: "",
   column_id: columnId,

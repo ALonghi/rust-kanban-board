@@ -70,11 +70,7 @@ export default function Sidebar() {
                   </div>
                 </Transition.Child>
                 <div className="flex flex-shrink-0 items-center px-4">
-                  <img
-                    className="h-8 w-auto"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=white"
-                    alt="Logo"
-                  />
+                  <img className="h-8 w-auto" src="/favicon.svg" alt="Logo" />
                   <p className="text-white ml-4 ">Kanban Board</p>
                 </div>
                 <div className="mt-5 h-0 flex-1 overflow-y-auto">
@@ -87,7 +83,7 @@ export default function Sidebar() {
                           item.current
                             ? "bg-theme-700 text-white"
                             : "text-blue-100 hover:bg-theme-700",
-                          "group flex items-center px-2 py-2 text-base font-medium rounded-md"
+                          "group flex items-center px-2 py-2 text-base font-medium rounded-md",
                         )}
                       >
                         <item.icon
@@ -138,7 +134,7 @@ export default function Sidebar() {
                     item.current
                       ? "bg-theme-700 text-white"
                       : "text-blue-100 hover:bg-theme-700",
-                    "group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+                    "group flex items-center px-2 py-2 text-sm font-medium rounded-md",
                   )}
                 >
                   <item.icon

@@ -36,7 +36,7 @@ export default function TaskCard({
 }: //
 TaskProps) {
   const [showComponent, setShowComponent] = useState<boolean>(
-    !!task?.id || true
+    !!task?.id || true,
   );
   const [taskTitle, setTaskTitle] = useState<string>(task.title || "");
 
@@ -71,7 +71,7 @@ TaskProps) {
         await onUpdate({ ...task, title: taskTitle } as ITask);
       } else {
         console.warn(
-          `Task neither new (${isNew}) nor onUpdate provided (${onUpdate})`
+          `Task neither new (${isNew}) nor onUpdate provided (${onUpdate})`,
         );
       }
     } catch (e) {

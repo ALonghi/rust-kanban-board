@@ -15,7 +15,7 @@ export const useKanbanData = (board: IBoard, tasks: ITask[]) => {
   const mapGroupedTasks = () => groupByColumn(currentTasks, currentBoard);
 
   const [groupedTasks, setGroupedTasks] = useState<GroupedTasks[]>(
-    currentTasks?.length > 0 ? mapGroupedTasks() : []
+    currentTasks?.length > 0 ? mapGroupedTasks() : [],
   );
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export const useKanbanData = (board: IBoard, tasks: ITask[]) => {
 
   const updateBoardAfterColumnRemoval = (
     newBoard: IBoard,
-    colId: IBoardColumn["id"]
+    colId: IBoardColumn["id"],
   ) => {
     setCurrentBoard(() => newBoard);
     setCurrentTasks((prev) => prev.filter((t) => t.column_id !== colId));

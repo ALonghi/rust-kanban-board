@@ -32,7 +32,7 @@ export default function BoardsOverview({ boards }) {
       (board_response: IBoard) => {
         setCurrentBoards((prev) => [...prev, board_response]);
         setOpen(false);
-      }
+      },
     );
   };
 

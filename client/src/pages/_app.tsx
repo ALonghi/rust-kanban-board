@@ -11,7 +11,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Head>
         <title>Kanban board</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="shortcut icon" href="icons/favicon.svg" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any" />
       </Head>
       <div className="flex flex-row bg-white">
         <Sidebar />

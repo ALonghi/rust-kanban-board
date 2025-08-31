@@ -39,13 +39,13 @@ export default function KanbanView({ board, tasks }: KanbanViewProps) {
     board.id,
     currentTasks,
     setCurrentTasks,
-    setNewTaskData
+    setNewTaskData,
   );
 
   const { handleDragEnd } = useDraggable(
     currentTasks,
     setCurrentTasks,
-    board.id
+    board.id,
   );
 
   return (

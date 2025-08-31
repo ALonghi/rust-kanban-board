@@ -15,7 +15,7 @@ export const useTaskData = (
   updateTasks: React.Dispatch<React.SetStateAction<ITask[]>>,
   setNewTaskData: React.Dispatch<
     React.SetStateAction<Omit<ITask, "id" | "created_at" | "position"> | null>
-  >
+  >,
 ) => {
   const saveNewTask = (task_request: CreateTaskRequest) => {
     const tasksOfSameColumn =
@@ -36,7 +36,7 @@ export const useTaskData = (
       .then(() => {
         const toast: IToast = createToast(
           "Task created successfully.",
-          "success"
+          "success",
         );
         addNotification(toast);
         return Promise.resolve();
@@ -44,7 +44,7 @@ export const useTaskData = (
       .catch((e) => {
         const toast: IToast = createToast(
           `Task creation failed with err ${e.message || e}.`,
-          "error"
+          "error",
         );
         addNotification(toast);
       })
@@ -56,7 +56,7 @@ export const useTaskData = (
       .catch((e) => {
         const toast: IToast = createToast(
           `Tasks update failed with err ${e.message || e}.`,
-          "error"
+          "error",
         );
         addNotification(toast);
       });
@@ -73,14 +73,14 @@ export const useTaskData = (
     return await TaskService.updateTask(toUpdate, boardId)
       .then((updated) => {
         updateTasks((prev) =>
-          prev.map((t) => (t.id === toUpdate.id ? toUpdate : t))
+          prev.map((t) => (t.id === toUpdate.id ? toUpdate : t)),
         );
         return Promise.resolve(updated);
       })
       .then((updated) => {
         const toast: IToast = createToast(
           "Task updated successfully.",
-          "success"
+          "success",
         );
         addNotification(toast);
         setNewTaskData(null);
@@ -89,7 +89,7 @@ export const useTaskData = (
       .catch((e) => {
         const toast: IToast = createToast(
           `Error in updating Task: ${e.message || e}`,
-          "error"
+          "error",
         );
         addNotification(toast);
         return Promise.reject(e);
@@ -103,7 +103,7 @@ export const useTaskData = (
         updateTasks(() => tasks);
         const toast: IToast = createToast(
           "The requested task was deleted.",
-          "success"
+          "success",
         );
         addNotification(toast);
         return Promise.resolve();
@@ -111,7 +111,7 @@ export const useTaskData = (
       .catch((err) => {
         const toast: IToast = createToast(
           `Task delete error: ${err.message}`,
-          "error"
+          "error",
         );
         addNotification(toast);
       });

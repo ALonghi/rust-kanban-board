@@ -16,7 +16,7 @@ interface DragItem {
 
 const getElemenPointingAtUpdated = (
   dragged: DragItem,
-  draggedColumnFiltered: ITask[]
+  draggedColumnFiltered: ITask[],
 ) => {
   const itemBeforeOfInitialColumn: ITask | null =
     dragged.index === 0 ? null : draggedColumnFiltered[dragged.index - 1];
@@ -34,7 +34,7 @@ const getElemenPointingAtUpdated = (
 export const useDraggable = (
   tasks: ITask[],
   updateTasks: React.Dispatch<React.SetStateAction<ITask[]>>,
-  boardId: IBoard["id"]
+  boardId: IBoard["id"],
 ) => {
   function handleDragEnd(props) {
     if (!props.destination) return;
@@ -76,7 +76,7 @@ export const useDraggable = (
       if (dragged.index < draggedColumnFiltered.length - 1) {
         const itemAfterUpdated: ITask = getElemenPointingAtUpdated(
           dragged,
-          draggedColumnFiltered
+          draggedColumnFiltered,
         );
         const toUpdate: Omit<ITask, "position">[] = removePositionField([
           itemMovedUpdated,
@@ -104,7 +104,7 @@ export const useDraggable = (
       if (dragged.index < draggedColumnFiltered.length - 1) {
         const itemAfterInitialColumnUpdated: ITask = getElemenPointingAtUpdated(
           dragged,
-          draggedColumnFiltered
+          draggedColumnFiltered,
         );
         const toUpdate: Omit<ITask, "position">[] = removePositionField([
           belowItem,
@@ -124,13 +124,13 @@ export const useDraggable = (
 
   const handleTasksUpdate = (
     updated: Omit<ITask, "position">[],
-    boardId: IBoard["id"]
+    boardId: IBoard["id"],
   ) =>
     TaskService.updateTasks(updated, boardId)
       .catch((e) => {
         const toast: IToast = createToast(
           `Error in moving tasks: ${e.message || e}`,
-          "error"
+          "error",
         );
         addNotification(toast);
       })
@@ -139,14 +139,14 @@ export const useDraggable = (
         updateTasks(() => tasks);
         const toast: IToast = createToast(
           "Tasks moved successfully.",
-          "success"
+          "success",
         );
         addNotification(toast);
       })
       .catch((err) => {
         const toast: IToast = createToast(
           `Error in updating tasks: ${err.message}`,
-          "error"
+          "error",
         );
         addNotification(toast);
       });

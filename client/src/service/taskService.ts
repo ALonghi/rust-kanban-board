@@ -8,7 +8,7 @@ export default class TaskService {
   static async createTask(req: CreateTaskRequest): Promise<ITask> {
     try {
       Logger.info(
-        `Adding task ${JSON.stringify(req)} to board ${req.board_id}`
+        `Adding task ${JSON.stringify(req)} to board ${req.board_id}`,
       );
       const response = (await axios
         .post(`/tasks`, req)
@@ -16,14 +16,14 @@ export default class TaskService {
       if (!response.success || !response.data)
         throw new Error(response.error_message);
       Logger.info(
-        `Added task ${response.data?.title} with id ${response.data?.id}`
+        `Added task ${response.data?.title} with id ${response.data?.id}`,
       );
       return response.data;
     } catch (e) {
       Logger.error(
         `Error in creating task (${JSON.stringify(req)}) for board ${
           req.board_id
-        }: ${e.message || e}`
+        }: ${e.message || e}`,
       );
       return Promise.reject(e);
     }
@@ -56,7 +56,7 @@ export default class TaskService {
       return response.data || [];
     } catch (e) {
       Logger.error(
-        `Error in getting tasks for board ${board_id}: ${e.message || e}`
+        `Error in getting tasks for board ${board_id}: ${e.message || e}`,
       );
       return Promise.reject(e);
     }
@@ -66,8 +66,8 @@ export default class TaskService {
     try {
       Logger.info(
         `Updating task ${task.id} for board ${boardId}  with ${JSON.stringify(
-          task
-        )}`
+          task,
+        )}`,
       );
       const response = (await axios
         .put(`/tasks`, [task])
@@ -80,7 +80,7 @@ export default class TaskService {
       Logger.error(
         `Error in updating task for board ${boardId} (${
           task.id
-        }) (${JSON.stringify(task)}: ${e.message || e}`
+        }) (${JSON.stringify(task)}: ${e.message || e}`,
       );
       return Promise.reject(e);
     }
@@ -88,7 +88,7 @@ export default class TaskService {
 
   static async deleteTask(
     taskId: ITask["id"],
-    boardId: IBoard["id"]
+    boardId: IBoard["id"],
   ): Promise<void> {
     try {
       Logger.info(`Deleting task ${taskId} from board ${boardId}`);
@@ -103,7 +103,7 @@ export default class TaskService {
       Logger.error(
         `Error in deleting task ${taskId} from board ${boardId}: ${
           e.message || e
-        }`
+        }`,
       );
       return Promise.reject(e);
     }
@@ -111,14 +111,14 @@ export default class TaskService {
 
   static async updateTasks(
     tasks: Omit<ITask, "position">[],
-    boardId: IBoard["id"]
+    boardId: IBoard["id"],
   ): Promise<ITask[]> {
     const tasksIds = tasks?.map((t) => t.id) || [];
     try {
       Logger.info(
         `Updating ${
           tasksIds.length
-        } tasks ${tasksIds} for board ${boardId}  with ${JSON.stringify(tasks)}`
+        } tasks ${tasksIds} for board ${boardId}  with ${JSON.stringify(tasks)}`,
       );
       const response = (await axios
         .put(`/tasks`, tasks)
@@ -130,8 +130,8 @@ export default class TaskService {
     } catch (e) {
       Logger.error(
         `Error in updating tasks for board ${boardId} (${tasksIds}) (${JSON.stringify(
-          tasks
-        )}: ${e.message || e}`
+          tasks,
+        )}: ${e.message || e}`,
       );
       return Promise.reject(e);
     }

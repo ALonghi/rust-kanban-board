@@ -19,7 +19,7 @@ type ColumnHeaderProps = {
   setNewTaskData: (task: Omit<ITask, "id" | "created_at" | "position">) => void;
   updateBoardAfterColumnRemoval?: (
     newBoard: IBoard,
-    colId: IBoardColumn["id"]
+    colId: IBoardColumn["id"],
   ) => void;
 };
 
@@ -50,7 +50,7 @@ export default function ColumnHeader({
     updateTasks,
     setNewTaskData,
     updateBoardAfterColumnRemoval,
-    column
+    column,
   );
 
   return (
@@ -66,7 +66,7 @@ export default function ColumnHeader({
             column={currentColumn}
             confirmedAction={() => {
               deleteColumn(currentColumn.id).finally(() =>
-                setShowWarning(false)
+                setShowWarning(false),
               );
             }}
             totalTasksRelated={
@@ -143,7 +143,7 @@ export default function ColumnHeader({
         className={`bg-gray-100 hover:bg-gray-200 py-0.5 px-4 mb-2 rounded-md w-full cursor-pointer`}
         onClick={() =>
           setNewTaskData(
-            getEmptyTask(board.id, currentColumn?.id || UNASSIGNED_COLUMN_ID)
+            getEmptyTask(board.id, currentColumn?.id || UNASSIGNED_COLUMN_ID),
           )
         }
       >
