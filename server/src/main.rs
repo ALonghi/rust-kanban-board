@@ -24,7 +24,6 @@ pub struct EnvVars {
 
 #[tokio::main]
 async fn main() {
-    dotenv::dotenv().expect("Error in reading .env file!");
     // Setup tracing
     let subscriber = FmtSubscriber::builder()
         .with_max_level(Level::DEBUG)

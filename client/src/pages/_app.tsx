@@ -6,6 +6,8 @@ import Sidebar from "@components/shared/Sidebar";
 import Notifications from "@components/shared/Notifications/Notifications";
 
 function MyApp({ Component, pageProps }: AppProps) {
+    console.log(`envs: ${JSON.stringify(process.env)}`)
+    console.log(`NEXT_PUBLIC_API_URL: ${process.env.NEXT_PUBLIC_API_URL}`)
   return (
     <>
       <Head>

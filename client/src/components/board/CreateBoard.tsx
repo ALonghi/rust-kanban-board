@@ -4,6 +4,8 @@ import Modal from "../shared/Modal";
 import InputForm from "@components/shared/InputForm";
 import { CreateBoardRequest, EMPTY_BOARD_REQ } from "@model/dto";
 import Spinner from "@components/shared/Spinner";
+import { createToast, IToast } from "@model/toast";
+import { addNotification } from "@stores/notificationStore";
 
 type CreateBoardProps = {
   open: boolean;
@@ -25,6 +27,13 @@ export default function CreateBoard({
       .then(() => {
         setBoard({ title: "" });
         setOpen(false);
+      })
+      .catch((e) => {
+        const toast: IToast = createToast(
+          `Error in creating board: ${e.message || e}`,
+          "error"
+        );
+        addNotification(toast);
       })
       .finally(() => setIsLoading(false));
   };

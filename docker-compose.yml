@@ -3,10 +3,14 @@ version: '3'
 services:
   kanban-board-frontend:
     container_name: kanban-board-frontend
+    env_file:
+      - client/.env
     build:
       context: ./client
       dockerfile: Dockerfile
-    deploy:   
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+    deploy:
       restart_policy:
         condition: on-failure
         delay: 3s
@@ -16,26 +20,30 @@ services:
       - 3000:3000
     networks:
       - my_network
-  kanban-board-backend:
-    container_name: kanban-board-backend
-    build:
-      context: ./server
-      dockerfile: Dockerfile
-    deploy:   
-      restart_policy:
-        condition: on-failure
-        delay: 3s
-        max_attempts: 3
-        window: 20s
-    ports:
-      - 8080
-    networks:
-      - my_network
-
+  # kanban-board-backend:
+  #   container_name: kanban-board-backend
+  #   env_file:
+  #     - server/.env
+  #   build:
+  #     context: ./server
+  #     dockerfile: Dockerfile
+  #     args:
+  #       MONGO_URI: ${MONGO_URI}
+  #       RUST_BACKTRACE: 1
+  #   deploy:
+  #     restart_policy:
+  #       condition: on-failure
+  #       delay: 3s
+  #       max_attempts: 3
+  #       window: 20s
+  #   ports:
+  #     - 8080
+  #   networks:
+  #     - my_network
   # Add more containers below (nginx, postgres, etc.)
 
-# Define a network, which allows containers to communicate
-# with each other, by using their container name as a hostname
+  # Define a network, which allows containers to communicate
+  # with each other, by using their container name as a hostname
 networks:
   my_network:
-    external: true
+    driver: bridge

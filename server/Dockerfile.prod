@@ -47,6 +47,7 @@ WORKDIR /deploy
 
 # We need the artifact from the build container, so let's grab it
 COPY --from=build /app/server ./
+COPY --from=build .env ./
 
 # Let's expose port 80 as we'll need fly's internal port mapping also assumes 80
 EXPOSE 80
